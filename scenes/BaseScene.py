@@ -35,6 +35,9 @@ class BaseScene():
 		
 	def game_status(self, item):
 		return self.current_state['game_status'].get(item, False)
+
+	def set_game_status(self, status, value):
+		self.current_state['game_status'][status] = value
 		
 	def contains_key(self, command, substring_list):
 		for element in substring_list:

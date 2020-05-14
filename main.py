@@ -1,4 +1,5 @@
-from scenes.BaseScene import BaseScene, InTree, InitialScene
+# from scenes.BaseScene import BaseScene, InTree, InitialScene
+from scenes.BaseScene import InitialScene
 from scenes.BaseScene import print_plane
 
 print ()
