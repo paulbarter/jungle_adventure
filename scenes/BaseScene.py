@@ -26,7 +26,10 @@ class BaseScene():
 		
 	def take(self, item):
 		self.current_state['items'][item] = True
-		
+
+	def drop(self, item):
+		self.current_state['items'][item] = False
+
 	def have(self, item):
 		return self.current_state['items'].get(item, False)
 		
@@ -175,5 +178,4 @@ class InTree(BaseScene):
 				print ('You really wish you had a radio :(')
 		else:
 			print ('You cant do that')
-		return scene		
-	
+		return scene

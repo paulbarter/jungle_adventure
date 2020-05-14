@@ -1,5 +1,6 @@
 from scenes.BaseScene import BaseScene
 from scenes.BaseScene import print_plane
+from scenes.Maze import StartMaze
 
 class Plane(BaseScene):
 
@@ -140,7 +141,7 @@ class Cave(BaseScene):
 		print ("      `-.-'.-'-' ._.       _.-'    .-'	")
 		print ("    `.-' _____  ._              .-'		")
 		print ("   -(.g$$$$$$$b.              .'		")
-		print ("     ''^^T$$$P^)            .(:			")	
+		print ("     ''^^T$$$P^)            .(:			")
 		print ("       _/  -'  /.'         /:/;			")
 		print ("    ._.'-'`-'  ')/         /;/;			")
 		print (" `-.-'..--''   ' /         /  ;			")
@@ -150,29 +151,55 @@ class Cave(BaseScene):
 		print ("    _.                      :			")
 		print ("                            ;`-			")
 		print ("                           :\			")
-		
+
 	def apply_action(self, command):
 		scene = self
 		scene.same_scene = True
 		if command == 'look': 
 			if self.game_status('wolf_dead'):
-				print ('')
+				print ('You cant see anything except for the dead wolf lying on the floor. The rest of the cave is pitch black')
 			else:
 				self.describe()
 		elif self.contains_key(command, ['kill', 'attack', 'touch', 'kick', 'stroke']) and not self.game_status('wolf_dead'):
 			print ('The wolf takes one swift bite and you die!')
 			self.dead = True
 		elif command == 'leave':
-			scene = Mountains(self.current_state)
+			if self.game_status('wolf_dead'):
+				print ('There seems to be no way out!')
+			else:
+				scene = Mountains(self.current_state)
 		elif self.contains_key(command, ['shoot', 'use gun', 'fire']) and self.have('gun') and not self.game_status('wolf_dead'):
-			print ('With a mighty bang you slay the wolf')
-			self.current_state['game_status']['wolf_dead'] = True
+			if self.have('bullets'):
+				print ('With a mighty bang you slay the wolf! The huge explosion causes a rockfall blocking the exit to the cave!')
+				if not self.game_status('torch_has_batteries'):
+					print ('Without any light it is hopeless, you search for what seems like days and eventually you ' \
+						   'starve to death trying to find a way out.')
+					self.dead = True
+				else:
+					self.current_state['game_status']['wolf_dead'] = True
+					self.drop('bullets')
+			else:
+				print ('Your gun has no bullets... darn!')
+		elif self.contains_key(command, ['use torch', 'turn on torch', 'switch on torch']):
+			if self.have('torch'):
+				if self.have('batteries') and self.game_status('torch_has_batteries'):
+					if self.game_status('wolf_dead'):
+						print('You switch on the torch and notice what looks like a tunnel, you walk closer and stumble ' \
+							  'into what looks like a maze!!!')
+						scene = StartMaze(self.current_state)
+					else:
+						print ('No time to use the torch - there is a deadly wolf in front of you!')
+				else:
+					print ('The torch has no batteries... its useless!')
+			else:
+				print ('Yes a torch would be soooo useful right now!')
 		elif command == 'hint':
-			print ('There is no taming that wolf') 
+			print ('There is no taming that wolf')
 		else:
 			print ('You cant do that')
+
 		return scene
-		
+
 class Forest(BaseScene):
 
 	def describe(self):
@@ -299,5 +326,4 @@ class Cabin(BaseScene):
 			print ('Wood cabins like this one are usually owned by dangeous woodsmen')
 		else:
 			print ('You cant do that')
-		return scene		
-		
+		return scene

@@ -1,5 +1,5 @@
 from scenes.BaseScene import BaseScene, InTree, InitialScene
- from scenes.BaseScene import print_plane
+from scenes.BaseScene import print_plane
 
 print ()
 print ('----------------------------------------------------------------')
@@ -15,15 +15,27 @@ input()
 from os import system
 system('cls')
 
+def print_dead():
+	print("								")
+	print("		     -|-				")
+	print("		      |					")
+	print("	   	  .-'~~~`-.				")
+	print("	 	.'         `.			")
+	print("	 	|  R  I  P  |			")
+	print("	 	|           |			")
+	print("	 	|           |			")
+	print("     |           |			")
+	print("^^^^^^^^^^^^^^^^^^^^^^^^^^	")
 
 ### Testing ###
-#state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'game_status' : {}, 'items' : {'radio' : True, 'parachute' : True}}
-#from scenes.Stage1Scenes import Plane
-#scene = Plane(state)
+state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'game_status' : {'torch_has_batteries' : True}, 'items' :
+	{'radio' : True, 'parachute' : True, 'torch' : True, 'batteries' : True, 'gun' : True, 'bullets' : True}}
+from scenes.Stage1Scenes import Cave
+scene = Cave(state)
 ###############
 
-state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'items' : {}, 'game_status' : {}}
-scene = InitialScene(state)
+# state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'items' : {}, 'game_status' : {}}
+# scene = InitialScene(state)
 command = ''
 while not(scene.dead or scene.success or command == 'exit'):
 	if not scene.same_scene:
@@ -40,6 +52,8 @@ while not(scene.dead or scene.success or command == 'exit'):
 if scene.dead:
 	print ('*** GAME OVER ***')
 	print ('*** Thanks for playing! ***')
+	print ()
+	print_dead()
 elif scene.success:
 	print ('Well done! You made it!!!')
 else:
