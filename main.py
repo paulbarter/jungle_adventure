@@ -44,6 +44,9 @@ while not(scene.dead or scene.success or command == 'exit'):
 	command = input()
 	if command == 'exit':
 		break
+	elif command.startswith('drop '):
+		string_tokens = command.split(' ')
+		scene.drop(string_tokens[1])
 	elif command == 'inv':
 		scene.clear()
 		scene.print_inventory(scene.current_state['items'])
@@ -53,6 +56,7 @@ while not(scene.dead or scene.success or command == 'exit'):
 if scene.dead:
 	print ('*** GAME OVER ***')
 	print ('*** Thanks for playing! ***')
+	print ('Your score is: %d' % scene.current_state['score'])
 	print ()
 	print_dead()
 elif scene.success:
