@@ -175,6 +175,171 @@ class DeadEndRight(BaseScene):
         print ('You can: ')
         print ('"l" : go left')
 
+class DeadEndBottom(BaseScene):
+    def describe(self):
+        print ('You reach a dead end (you are the "#")')
+        print ("")
+        print('  |   |')
+        print('  | # |')
+        print('   --- ')
+        print ()
+        print ('You can: ')
+        print ('"u" : go up')
+
+class Thirty(DeadEndBottom):
+    def apply_action(self, command):
+        scene = self
+        scene.same_scene = True
+        if command == 'look':
+            self.describe()
+        elif command == 'u':
+            scene = TwentyNine(self.current_state)
+        elif self.contains_key(command, ['leave']):
+            print ('You cant leave, you are in a maze, you must keep going...')
+        elif command == 'hint':
+            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
+                    situation. Ah yes... Always build with triangles!')
+        else:
+            print ('You cant do that')
+        return scene
+
+class TwentyNine(RightBend):
+    def apply_action(self, command):
+        scene = self
+        scene.same_scene = True
+        if command == 'look':
+            self.describe()
+        elif command == 'r':
+            scene = TwentyOne(self.current_state)
+        elif command == 'd':
+            scene = Thirty(self.current_state)
+        elif self.contains_key(command, ['leave']):
+            print ('You cant leave, you are in a maze, you must keep going...')
+        elif command == 'hint':
+            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
+                    situation. Ah yes... Always build with triangles!')
+        else:
+            print ('You cant do that')
+        return scene
+
+class TwentyEight(DeadEndLeft):
+    def apply_action(self, command):
+        scene = self
+        scene.same_scene = True
+        if command == 'look':
+            self.describe()
+        elif command == 'r':
+            scene = TwentySeven(self.current_state)
+        elif self.contains_key(command, ['leave']):
+            print ('You cant leave, you are in a maze, you must keep going...')
+        elif command == 'hint':
+            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
+                    situation. Ah yes... Always build with triangles!')
+        else:
+            print ('You cant do that')
+        return scene
+
+class TwentySeven(TUp):
+    def apply_action(self, command):
+        scene = self
+        scene.same_scene = True
+        if command == 'look':
+            self.describe()
+        elif command == 'l':
+            scene = TwentyEight(self.current_state)
+        elif command == 'r':
+            scene = TwentyFive(self.current_state)
+        elif command == 'u':
+            scene = TwentySix(self.current_state)
+        elif self.contains_key(command, ['leave']):
+            print ('You cant leave, you are in a maze, you must keep going...')
+        elif command == 'hint':
+            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
+                    situation. Ah yes... Always build with triangles!')
+        else:
+            print ('You cant do that')
+        return scene
+
+class TwentySix(RightBend):
+    def apply_action(self, command):
+        scene = self
+        scene.same_scene = True
+        if command == 'look':
+            self.describe()
+        elif command == 'r':
+            scene = Seventeen(self.current_state)
+        elif command == 'd':
+            scene = TwentySeven(self.current_state)
+        elif self.contains_key(command, ['leave']):
+            print ('You cant leave, you are in a maze, you must keep going...')
+        elif command == 'hint':
+            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
+                    situation. Ah yes... Always build with triangles!')
+        else:
+            print ('You cant do that')
+        return scene
+
+class TwentyFive(TUp):
+    def apply_action(self, command):
+        scene = self
+        scene.same_scene = True
+        if command == 'look':
+            self.describe()
+        elif command == 'l':
+            scene = TwentySeven(self.current_state)
+        elif command == 'r':
+            scene = TwentyThree(self.current_state)
+        elif command == 'u':
+            scene = Seventeen(self.current_state)
+        elif self.contains_key(command, ['leave']):
+            print ('You cant leave, you are in a maze, you must keep going...')
+        elif command == 'hint':
+            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
+                    situation. Ah yes... Always build with triangles!')
+        else:
+            print ('You cant do that')
+        return scene
+
+class TwentyFour(DeadEndRight):
+    def apply_action(self, command):
+        scene = self
+        scene.same_scene = True
+        if command == 'look':
+            self.describe()
+        elif command == 'l':
+            scene = TwentyThree(self.current_state)
+        elif self.contains_key(command, ['leave']):
+            print ('You cant leave, you are in a maze, you must keep going...')
+        elif command == 'hint':
+            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
+                    situation. Ah yes... Always build with triangles!')
+        else:
+            print ('You cant do that')
+        return scene
+
+class TwentyThree(FourWay):
+    def apply_action(self, command):
+        scene = self
+        scene.same_scene = True
+        if command == 'look':
+            self.describe()
+        elif command == 'u':
+            scene = Sixteen(self.current_state)
+        elif command == 'd':
+            scene = TwentyOne(self.current_state)
+        elif command == 'l':
+            scene = TwentyFive(self.current_state)
+        elif command == 'r':
+            scene = TwentyFour(self.current_state)
+        elif self.contains_key(command, ['leave']):
+            print ('You cant leave, you are in a maze, you must keep going...')
+        elif command == 'hint':
+            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
+                    situation. Ah yes... Always build with triangles!')
+        else:
+            print ('You cant do that')
+        return scene
+
 class Eighteen(Passage):
     def apply_action(self, command):
         scene = self
@@ -196,7 +361,7 @@ class Eighteen(Passage):
             print ('You cant do that')
         return scene
 
-class Seventeen(RightBendBottom):
+class Seventeen(TLeft):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
@@ -204,8 +369,10 @@ class Seventeen(RightBendBottom):
             self.describe()
         elif command == 'u':
             scene = Eighteen(self.current_state)
-        elif command == 'r':
-            scene = Sixteen(self.current_state)
+        elif command == 'l':
+            scene = TwentySix(self.current_state)
+        elif command == 'd':
+            scene = TwentyFive(self.current_state)
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
@@ -215,16 +382,18 @@ class Seventeen(RightBendBottom):
             print ('You cant do that')
         return scene
 
-class Sixteen(FlatPassage):
+class Sixteen(TRight):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
         if command == 'look':
             self.describe()
-        elif command == 'l':
-            scene = Seventeen(self.current_state)
+        elif command == 'u':
+            scene = Fourteen(self.current_state)
         elif command == 'r':
             scene = Fifteen(self.current_state)
+        elif command == 'd':
+            scene = TwentyThree(self.current_state)
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
@@ -253,7 +422,7 @@ class Fifteen(LeftBendBottom):
             print ('You cant do that')
         return scene
 
-class Fourteen(DeadEndLeft):
+class Fourteen(RightBend):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
@@ -261,6 +430,8 @@ class Fourteen(DeadEndLeft):
             self.describe()
         elif command == 'r':
             scene = Thirteen(self.current_state)
+        elif command == 'd':
+            scene = Sixteen(self.current_state)
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
@@ -310,7 +481,7 @@ class TwentyTwo(RightBendBottom):
             print ('You cant do that')
         return scene
 
-class TwentyOne(RightBend):
+class TwentyOne(FourWay):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
@@ -320,6 +491,10 @@ class TwentyOne(RightBend):
             scene = TwentyTwo(self.current_state)
         elif command == 'r':
             scene = Twelve(self.current_state)
+        elif command == 'l':
+            scene = TwentyNine(self.current_state)
+        elif command == 'u':
+            scene = TwentyThree(self.current_state)
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
