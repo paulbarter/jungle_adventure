@@ -23,15 +23,29 @@ class BaseScene():
 		self.same_scene = False
 		self.dead = False
 		self.success = False
-		
+
+	def damage(self, amount):
+		self.current_state['life'] = self.current_state['life'] - amount
+		if self.current_state['life'] <= 0 :
+			self.dead = True
+
 	def take(self, item):
 		self.current_state['items'][item] = True
-		
+
+	def drop(self, item):
+		if self.current_state['items'][item]:
+			self.current_state['items'][item] = False
+		else:
+			print ('You dont have that to drop. Check your inventory by typing "inv"')
+
 	def have(self, item):
 		return self.current_state['items'].get(item, False)
-		
+
 	def game_status(self, item):
 		return self.current_state['game_status'].get(item, False)
+
+	def set_game_status(self, status, value):
+		self.current_state['game_status'][status] = value
 		
 	def contains_key(self, command, substring_list):
 		for element in substring_list:
@@ -175,5 +189,4 @@ class InTree(BaseScene):
 				print ('You really wish you had a radio :(')
 		else:
 			print ('You cant do that')
-		return scene		
-	
+		return scene
