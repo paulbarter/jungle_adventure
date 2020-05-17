@@ -32,9 +32,11 @@ class BaseScene():
 	def take(self, item):
 		self.current_state['items'][item] = True
 
-	def drop(self, item):
+	def drop(self, item, secret=False):
 		if self.current_state['items'][item]:
 			self.current_state['items'][item] = False
+			if not secret:
+				print ("You drop: %s " % item)
 		else:
 			print ('You dont have that to drop. Check your inventory by typing "inv"')
 
@@ -46,7 +48,11 @@ class BaseScene():
 
 	def set_game_status(self, status, value):
 		self.current_state['game_status'][status] = value
-		
+
+	def pause(self):
+		print ('press enter...')
+		input()
+
 	def contains_key(self, command, substring_list):
 		for element in substring_list:
 			if element in command:
@@ -139,7 +145,7 @@ class InitialScene(BaseScene):
 				self.current_state['items']['radio'] = True
 			else:
 				print ('Your pocket has some fluff in it')
-		elif 'radio' in command:
+		elif 'use radio' in command:
 			if self.current_state['items'].get('radio', False):
 				if scene.game_status('radio_has_batteries'):
 					print ('You radio your plane for help and your co-pilot finds you!')

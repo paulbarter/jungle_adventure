@@ -178,7 +178,7 @@ class Cave(BaseScene):
 			else:
 				scene = Mountains(self.current_state)
 		elif self.contains_key(command, ['shoot', 'use gun', 'fire']) and self.have('gun') and not self.game_status('wolf_dead'):
-			if self.have('bullets'):
+			if scene.game_status('bullets_in_gun'):
 				print ('With a mighty bang you slay the wolf! The huge explosion causes a rockfall blocking the exit to the cave!')
 				if not self.game_status('torch_has_batteries'):
 					print ('Without any light it is hopeless, you search for what seems like days and eventually you ' \
@@ -186,7 +186,6 @@ class Cave(BaseScene):
 					self.dead = True
 				else:
 					self.current_state['game_status']['wolf_dead'] = True
-					self.drop('bullets')
 			else:
 				print ('Your gun has no bullets... darn!')
 		elif self.contains_key(command, ['use torch', 'turn on torch', 'switch on torch']):
@@ -253,6 +252,9 @@ class Forest(BaseScene):
 				print ('No need to go in there any more, you have what you need from the woodsman.')
 			elif self.game_status('wolf_dead'):
 				from scenes.OgreInCabin import Ogre
+				print("Oi what are you doing here and what do you want!!!")
+				print("Yells a ferocious looking man who looks exactly like an Ogre (but is actually the Woodsman.)")
+				print("I heard a gunshot and came back to my house to see what was going on...")
 				scene = Ogre(self.current_state)
 			else:
 				scene = Cabin(self.current_state)

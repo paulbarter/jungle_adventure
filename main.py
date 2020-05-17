@@ -6,6 +6,7 @@ print ()
 print ('----------------------------------------------------------------')
 print ('**************** Welcome to Jungle adventure!!! ****************') 
 print ('Type "hint" if you are stuck and type "exit" if you want to quit')
+print ('Type "drop <item name>" to drop an item')
 print ('Type "inv" to see what you are carrying')
 print ('----------------------------------------------------------------')
 print ()
@@ -25,17 +26,10 @@ def print_dead():
 	print("	 	|  R  I  P  |			")
 	print("	 	|           |			")
 	print("	 	|           |			")
-	print("     |           |			")
+	print("		|           |			")
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^^	")
 
-### Testing ###
-# state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'game_status' : {'torch_has_batteries' : True}, 'items' :
-# 	{'radio' : True, 'parachute' : True, 'torch' : True, 'batteries' : True, 'gun' : True, 'bullets' : True}}
-# from scenes.Stage1Scenes import Cave
-# scene = Cave(state)
-###############
-
-GLOBAL_COMMANDS = ['take batteries out', 'take batteries out of torch', 'take batteries out of radio', 'take out batteries', 'put batteries in torch', 'put batteries in radio', 'put batteries into torch', 'put batteries into radio']
+GLOBAL_COMMANDS = ['put bullets in gun', 'take batteries out', 'take batteries out of torch', 'take batteries out of radio', 'take out batteries', 'put batteries in torch', 'put batteries in radio', 'put batteries into torch', 'put batteries into radio']
 
 def apply_global_action(command, scene):
 	if command == 'take batteries out' or command == 'take out batteries' or command == 'take batteries out of torch' or command == 'take batteries out of radio':
@@ -56,7 +50,7 @@ def apply_global_action(command, scene):
 				print ("You put the batteries in the torch.")
 				scene.set_game_status('torch_has_batteries', True)
 				scene.inc_score(5, 'torch_batteries')
-				scene.drop('batteries')
+				scene.drop('batteries', secret=True)
 			else:
 				print ("The torch already has batteries!")
 		else:
@@ -67,15 +61,28 @@ def apply_global_action(command, scene):
 				print ("You put the batteries in the radio.")
 				scene.set_game_status('radio_has_batteries', True)
 				scene.inc_score(2, 'radio_batteries')
-				scene.drop('batteries')
+				scene.drop('batteries', secret=True)
 			else:
 				print ("The radio already has batteries!")
 		else:
 			print ("You dont have any batteries!")
+	elif command == 'put bullets in gun':
+		if scene.have('bullets') and scene.have('gun'):
+			scene.set_game_status('bullets_in_gun', True)
+			scene.inc_score(2, 'bullets in gun')
+			scene.drop('bullets', secret=True)
 	else:
 		print ("Be more specific")
 
-state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'items' : {}, 'game_status' : {}}
+### Testing ###
+# state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'game_status' : {'torch_has_batteries' : True}, 'items' :
+# 	{'radio' : True, 'parachute' : True, 'torch' : True, 'batteries' : True, 'bullets' : True}}
+# from scenes.OgreInCabin import Ogre
+# scene = Ogre(state)
+###############
+
+state = {'score' : 0, 'score_e'
+					  'lements' : {}, 'life' : 10, 'items' : {}, 'game_status' : {}}
 scene = InitialScene(state)
 command = ''
 while not(scene.dead or scene.success or command == 'exit'):
@@ -94,6 +101,12 @@ while not(scene.dead or scene.success or command == 'exit'):
 	elif scene.contains_key(command, GLOBAL_COMMANDS):
 		apply_global_action(command, scene)
 		scene.same_scene = True
+	elif '999 give' in command:
+		tokens = command.split(' ')
+		scene.take(tokens[2])
+	elif '999 set_status' in command:
+		tokens = command.split(' ')
+		scene.set_game_status(tokens[2], tokens[3])
 	else:
 		scene = scene.apply_action(command)
 if scene.dead:
