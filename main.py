@@ -29,14 +29,54 @@ def print_dead():
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^^	")
 
 ### Testing ###
-state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'game_status' : {'torch_has_batteries' : True}, 'items' :
-	{'radio' : True, 'parachute' : True, 'torch' : True, 'batteries' : True, 'gun' : True, 'bullets' : True}}
-from scenes.Stage1Scenes import Cave
-scene = Cave(state)
+# state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'game_status' : {'torch_has_batteries' : True}, 'items' :
+# 	{'radio' : True, 'parachute' : True, 'torch' : True, 'batteries' : True, 'gun' : True, 'bullets' : True}}
+# from scenes.Stage1Scenes import Cave
+# scene = Cave(state)
 ###############
 
-# state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'items' : {}, 'game_status' : {}}
-# scene = InitialScene(state)
+GLOBAL_COMMANDS = ['take batteries out', 'take batteries out of torch', 'take batteries out of radio', 'take out batteries', 'put batteries in torch', 'put batteries in radio', 'put batteries into torch', 'put batteries into radio']
+
+def apply_global_action(command, scene):
+	if command == 'take batteries out' or command == 'take out batteries' or command == 'take batteries out of torch' or command == 'take batteries out of radio':
+		if (scene.have('radio') or scene.have('torch')):
+			if scene.have('batteries'):
+				print ("You already took the batteries out!")
+			else:
+				print ('You take out the batteries')
+				scene.set_game_status('radio_has_batteries', False)
+				scene.set_game_status('torch_has_batteries', False)
+				scene.take('batteries')
+				scene.inc_score(2, 'take batteries out')
+		else:
+			print ("You dont have anything that has batteries!")
+	elif command == 'put batteries in torch' or command == 'put batteries into torch':
+		if scene.have('batteries'):
+			if not scene.game_status('torch_has_batteries'):
+				print ("You put the batteries in the torch.")
+				scene.set_game_status('torch_has_batteries', True)
+				scene.inc_score(5, 'torch_batteries')
+				scene.drop('batteries')
+			else:
+				print ("The torch already has batteries!")
+		else:
+			print ("You dont have any batteries!")
+	elif command == 'put batteries in radio' or command == 'put batteries into radio':
+		if scene.have('batteries'):
+			if not scene.game_status('radio_has_batteries'):
+				print ("You put the batteries in the radio.")
+				scene.set_game_status('radio_has_batteries', True)
+				scene.inc_score(2, 'radio_batteries')
+				scene.drop('batteries')
+			else:
+				print ("The radio already has batteries!")
+		else:
+			print ("You dont have any batteries!")
+	else:
+		print ("Be more specific")
+
+state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'items' : {}, 'game_status' : {}}
+scene = InitialScene(state)
 command = ''
 while not(scene.dead or scene.success or command == 'exit'):
 	if not scene.same_scene:
@@ -50,6 +90,9 @@ while not(scene.dead or scene.success or command == 'exit'):
 	elif command == 'inv':
 		scene.clear()
 		scene.print_inventory(scene.current_state['items'])
+		scene.same_scene = True
+	elif scene.contains_key(command, GLOBAL_COMMANDS):
+		apply_global_action(command, scene)
 		scene.same_scene = True
 	else:
 		scene = scene.apply_action(command)

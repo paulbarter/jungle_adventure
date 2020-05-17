@@ -56,7 +56,8 @@ class BaseScene():
 	def print_inventory(self, inventory):
 		print ("You are carrying the following:")
 		for key, item in inventory.items():
-			print (key)
+			if item:
+				print (key)
 		
 		if len(inventory.items()) == 0:
 			print ('Zippy zap, nada, nothing, zuco, nil, zero... You really wish you were carrying something')
@@ -133,16 +134,20 @@ class InitialScene(BaseScene):
 		elif 'look' in command and ('pocket' in command or 'clothes' in command):
 			if not self.current_state['items'].get('radio', False):	
 				print ('You find a 2 way radio in your pocket!')
+				scene.set_game_status('radio_has_batteries', True)
 				self.inc_score(1, 'radio')
 				self.current_state['items']['radio'] = True
 			else:
 				print ('Your pocket has some fluff in it')
 		elif 'radio' in command:
 			if self.current_state['items'].get('radio', False):
-				print ('You radio your plane for help and your co-pilot finds you!')
-				self.inc_score(5, 'copilot')
-				print ('You are inside your plane. Your co-pilot is injured and after saving you dies...')
-				scene = Plane(self.current_state)
+				if scene.game_status('radio_has_batteries'):
+					print ('You radio your plane for help and your co-pilot finds you!')
+					self.inc_score(5, 'copilot')
+					print ('You are inside your plane. Your co-pilot is injured and after saving you dies...')
+					scene = Plane(self.current_state)
+				else:
+					print ("The radio doesnt work for some reason?")
 			else:
 				print ('You really wish you had a radio :(')
 		elif command == 'hint':

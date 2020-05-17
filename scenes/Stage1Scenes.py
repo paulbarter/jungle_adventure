@@ -87,6 +87,8 @@ class LeavePlane(BaseScene):
 			self.clear()
 			print ('You walk down a path to the mountains and come upon a cave')
 			scene = Mountains(self.current_state)
+		elif command == '4':
+			scene = Cliff(self.current_state)
 		elif command == 'hint':
 			print ('You really need to go somewhere...')
 		else:
@@ -189,7 +191,7 @@ class Cave(BaseScene):
 				print ('Your gun has no bullets... darn!')
 		elif self.contains_key(command, ['use torch', 'turn on torch', 'switch on torch']):
 			if self.have('torch'):
-				if self.have('batteries') and self.game_status('torch_has_batteries'):
+				if self.game_status('torch_has_batteries'):
 					if self.game_status('wolf_dead'):
 						print('You switch on the torch and notice what looks like a tunnel, you walk closer and stumble ' \
 							  'into what looks like a maze!!!')
@@ -247,7 +249,9 @@ class Forest(BaseScene):
 		elif command == 'look cabin':
 			print ('The cabin looks charming')
 		elif command == '1':
-			if self.game_status('wolf_dead'):
+			if self.have('map'):
+				print ('No need to go in there any more, you have what you need from the woodsman.')
+			elif self.game_status('wolf_dead'):
 				from scenes.OgreInCabin import Ogre
 				scene = Ogre(self.current_state)
 			else:
@@ -267,8 +271,7 @@ class Goat(BaseScene):
 		if self.have('bullets'):
 			print ("The goat is munching away")
 		else:
-			print('The goat looks at you in surprise. You can see a store cupboard behind the  \
-				   goat. But the goat looks like it wont budge.')
+			print('The goat looks at you in surprise. You can see a store cupboard behind the goat. But the goat looks like it wont budge.')
 			print("")
 			print("                                                .--____.				")
 			print("                     ,_____._,                ,~-__,__,;\				")
@@ -322,12 +325,13 @@ class Goat(BaseScene):
 		elif command == 'feed goat':
 			print ('What are you going to feed the goat with?')
 		elif self.contains_key(command, ['give flowers', 'offer flowers', 'feed goat with flowers']):
-			if self.has('flowers'):
+			if self.have('flowers'):
 				print('The goat takes the flowers greedily, allowing you to open the store cupboard. You find...')
 				print ('press enter...')
 				input()
-				print ('a tin can and some shot gun bullets!')
+				print ('a torch with no batteries and some shot gun bullets!')
 				self.take('bullets')
+				self.take('torch')
 				self.inc_score(3, 'bullets')
 			else:
 				print ('You dont have any flowers')
@@ -449,3 +453,74 @@ class Cabin(BaseScene):
 		else:
 			print ('You cant do that')
 		return scene
+
+
+class Cliff(BaseScene):
+
+	def describe(self):
+		print ('You come to a massive cliff where a raging river thunders over the edge...')
+		print ("")
+		print ("                              _____,,, //,, ,/,     ")
+		print ("                             /-- --- --- -----      ")
+		print ("                            ///--- --- -- - ----    ")
+		print ("                           o////- ---- --- --       ")
+		print ("                           !!//o/---  -- --         ")
+		print ("                         o*) !///,~,,  ,\/,,/,//,,  ")
+		print ("                           o!*!o'(\          /\     ")
+		print ("                         | ! o ',) \/\  /\  /  \/\  ")
+		print ("                        o  !o! !!|    \/  \/     /  ")
+		print ("                       ( * (  o!'; |\   \       /   ")
+		print ("                        o o ! * !` | \  /       \   ")
+		print ("                       o  |  o 'o| | :  \       /   ")
+		print ("                        *  o !*!': |o|  /      /    ")
+		print ("                            (o''| `| : /      /     ")
+		print ("                            ! *|'`  \|/       \     ")
+		print ("                           ' !o!':\  \         \    ")
+		print ("                            ( ('|  \  `._______/    ")
+		print ("////\\\,,\///,,,,\,/oO._*  o !*!'`  `.________/     ")
+		print ("  ---- -- ------- - -oO*OoOo (o''|           /      ")
+		print ("    --------  ------ 'oO*OoO!*|'o!!          \      ")
+		print ("-------  -- - ---- --* oO*OoO *!'| '         /      ")
+		print (" ---  -   -----  ---- - oO*OoO!!':o!'       /       ")
+		print (" - -  -----  -  --  - *--oO*OoOo!`         /        ")
+		print ()
+
+	def apply_action(self, command):
+		scene = self
+		scene.same_scene = True
+		if command == 'look':
+			self.describe()
+		elif command == 'look river':
+			print ('The river is powerful!')
+		elif self.contains_key(command, ['swim']):
+			print ('You foolishly take a running leap into the deadly river. You fight for breath and the river swirls you around, but you cannot break free and drown.')
+			self.dead = True
+		elif self.contains_key(command, ['jump', 'leap']):
+			print ('You say a quick prayer and jump off the cliff and die instantly on the rocks below.')
+			self.dead = True
+		elif command == 'look cliff':
+			print ('You edge slowly to the edge of the cliff and peer down. It is 100"s of metres to the bottom!')
+		elif command == 'look down':
+			print ('Never, ever look down!')
+		elif self.contains_key(command, ['climb']):
+			print ('You start climbing your way down the immense cliff. It is going well until you realise that the wet rocks make it impossible to climb.')
+			print ("Defeated you start climbing back up. A rock comes loose! You swing one handed into the cliff face and crash your head into the rock.")
+			print ("Stunned for a moment, you recover and drag your aching body back up the cliff")
+			self.damage(4)
+		elif self.contains_key(command, ['parachute']):
+			if self.have('map'):
+				print ('You put on the parachute, wait for a gust of wind and take to the skies, like an..... <press enter>')
+				input()
+				print ('Like an EAGLE!!! You glide down the cliff and land with a bump safely on the ground. Well done!!! You have made it to level 2!')
+				print ('Now you will just have to wait until your pappy makes level 2... Until then, happy adventuring!')
+				self.inc_score(10, 'parachute')
+			else:
+				print ('You would never take a leap off the cliff unless you knew exactly where you were going when you landed.')
+		elif command == 'leave':
+			scene = LeavePlane(self.current_state)
+		elif command == 'hint':
+			print ('The way down the cliff could be your only way out, if only you could find a safe way to do that.')
+		else:
+			print ('You cant do that')
+		return scene
+
