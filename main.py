@@ -25,15 +25,8 @@ def print_dead():
 	print("	 	|  R  I  P  |			")
 	print("	 	|           |			")
 	print("	 	|           |			")
-	print("     |           |			")
+	print("		|           |			")
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^^	")
-
-### Testing ###
-# state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'game_status' : {'torch_has_batteries' : True}, 'items' :
-# 	{'radio' : True, 'parachute' : True, 'torch' : True, 'batteries' : True, 'gun' : True, 'bullets' : True}}
-# from scenes.Stage1Scenes import Cave
-# scene = Cave(state)
-###############
 
 GLOBAL_COMMANDS = ['take batteries out', 'take batteries out of torch', 'take batteries out of radio', 'take out batteries', 'put batteries in torch', 'put batteries in radio', 'put batteries into torch', 'put batteries into radio']
 
@@ -75,6 +68,13 @@ def apply_global_action(command, scene):
 	else:
 		print ("Be more specific")
 
+### Testing ###
+# state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'game_status' : {'torch_has_batteries' : True}, 'items' :
+# 	{'radio' : True, 'parachute' : True, 'torch' : True, 'batteries' : True, 'gun' : True, 'bullets' : True}}
+# from scenes.Maze import StartMaze
+# scene = StartMaze(state)
+###############
+
 state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'items' : {}, 'game_status' : {}}
 scene = InitialScene(state)
 command = ''
@@ -102,7 +102,10 @@ if scene.dead:
 	print ('Your score is: %d' % scene.current_state['score'])
 	print ()
 	print_dead()
+	input()
 elif scene.success:
 	print ('Well done! You made it!!!')
+	input()
 else:
 	print ('Thanks for playing, go well!')
+	input()

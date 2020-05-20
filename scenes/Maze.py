@@ -164,6 +164,17 @@ class DeadEndLeft(BaseScene):
         print ('You can: ')
         print ('"r" : go right')
 
+class DeadEndLeftTreasure(BaseScene):
+    def describe(self):
+        print ('You reach a dead end (you are the "#")')
+        print ("")
+        print('  ____ ')
+        print(' |+# ')
+        print('  ---- ')
+        print ()
+        print ('You can: ')
+        print ('"r" : go right')
+
 class DeadEndRight(BaseScene):
     def describe(self):
         print ('You reach a dead end (you are the "#")')
@@ -197,8 +208,7 @@ class Thirty(DeadEndBottom):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -216,16 +226,24 @@ class TwentyNine(RightBend):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
 
-class TwentyEight(DeadEndLeft):
+class TwentyEightTreasure(DeadEndLeftTreasure):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+
+        if not self.game_status('have_treasure'):
+            print ('You notice something strange on the floor... you stoop to pick it up. It is a scrap of paper that looks like this:')
+            print ('$:5 @:S &:P (:E !:N ~:1 `:T #:0 $:M ^:D ):6')
+            print ('Under the paper you find a gold coin!')
+            self.take('gold coin')
+            self.inc_score(4, 'maze_treasure')
+            self.set_game_status('have_treasure', True)
+
         if command == 'look':
             self.describe()
         elif command == 'r':
@@ -233,8 +251,24 @@ class TwentyEight(DeadEndLeft):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
+        else:
+            print ('You cant do that')
+        return scene
+
+class TwentyEightTreasureGone(DeadEndLeft):
+    def apply_action(self, command):
+        scene = self
+        scene.same_scene = True
+
+        if command == 'look':
+            self.describe()
+        elif command == 'r':
+            scene = TwentySeven(self.current_state)
+        elif self.contains_key(command, ['leave']):
+            print ('You cant leave, you are in a maze, you must keep going...')
+        elif command == 'hint':
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -246,7 +280,10 @@ class TwentySeven(TUp):
         if command == 'look':
             self.describe()
         elif command == 'l':
-            scene = TwentyEight(self.current_state)
+            if not self.game_status('have_treasure'):
+                scene = TwentyEightTreasure(self.current_state)
+            else:
+                scene = TwentyEightTreasureGone(self.current_state)
         elif command == 'r':
             scene = TwentyFive(self.current_state)
         elif command == 'u':
@@ -254,8 +291,7 @@ class TwentySeven(TUp):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -273,8 +309,7 @@ class TwentySix(RightBend):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -294,8 +329,7 @@ class TwentyFive(TUp):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -311,8 +345,7 @@ class TwentyFour(DeadEndRight):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -334,13 +367,28 @@ class TwentyThree(FourWay):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
 
-class Eighteen(Passage):
+class Eighteen(DeadEndTop):
+    def apply_action(self, command):
+        scene = self
+        scene.same_scene = True
+        if command == 'look':
+            self.describe()
+        elif command == 'd':
+            scene = Seventeen(self.current_state)
+        elif self.contains_key(command, ['leave']):
+            print ('You cant leave, you are in a maze, you must keep going...')
+        elif command == 'hint':
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
+        else:
+            print ('You cant do that')
+        return scene
+
+class Exit(Passage):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
@@ -382,8 +430,7 @@ class Eighteen(Passage):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -403,8 +450,7 @@ class Seventeen(TLeft):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -424,8 +470,7 @@ class Sixteen(TRight):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -443,8 +488,7 @@ class Fifteen(LeftBendBottom):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -462,13 +506,12 @@ class Fourteen(RightBend):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
 
-class Thirteen(TDown):
+class Thirteen(FourWay):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
@@ -480,11 +523,12 @@ class Thirteen(TDown):
             scene = Nine(self.current_state)
         elif command == 'd':
             scene = Fifteen(self.current_state)
+        elif command == 'u':
+            scene = Exit(self.current_state)
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -502,8 +546,7 @@ class TwentyTwo(RightBendBottom):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -525,8 +568,7 @@ class TwentyOne(FourWay):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -544,8 +586,7 @@ class Twelve(LeftBend):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -565,8 +606,7 @@ class Eleven(TUp):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -582,8 +622,7 @@ class Twenty(DeadEndRight):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -601,8 +640,7 @@ class Ten(RightBend):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -622,8 +660,7 @@ class Nine(TUp):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -641,8 +678,7 @@ class Eight(LeftBend):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -660,8 +696,7 @@ class Seven(LeftBendBottom):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -679,8 +714,7 @@ class Six(LeftBend):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -700,8 +734,7 @@ class Five(TRight):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -717,8 +750,7 @@ class Nineteen(DeadEndTop):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -736,8 +768,7 @@ class Four(RightBendBottom):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -759,8 +790,7 @@ class Three(FourWay):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -778,8 +808,7 @@ class Two(Passage):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -797,8 +826,7 @@ class One(LeftBendBottom):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                    situation. Ah yes... Always build with triangles!')
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -831,8 +859,7 @@ class EnterMaze(BaseScene):
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
-            print ('Now what was it your pappy always used to say... surely his advice will come in handy one day in a dangerous \
-                situation. Ah yes... Always build with triangles!')
+            print ('Chin up, stay positive, you are sure the end is just around the corner.')
         else:
             print ('You cant do that')
         return scene
@@ -862,6 +889,10 @@ class StartMaze(BaseScene):
         print('88      |_."|   ." | ." |/                   \  \ |  `.  | `._    |  88')
         print('88     ."   | ."   |/|  /                     \ |`!   |`.|    `.  |  88')
         print ()
+        print ('You notice writing on the wall:')
+        print ()
+        print ('THIS DEADLY MAZE, THROUGH TWISTS AND TURNS, CONTAINS AN EXIT FOR YOUR PLEASURE ')
+        print ('IF YOU SURVIVE BEFORE YOU GET OUTSIDE, YOU MAY EVEN FIND SOME TREASURE!')
 
     def apply_action(self, command):
         scene = self
