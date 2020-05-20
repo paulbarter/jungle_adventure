@@ -5,8 +5,12 @@ from scenes.BaseScene import print_plane
 print ()
 print ('----------------------------------------------------------------')
 print ('**************** Welcome to Jungle adventure!!! ****************') 
-print ('Type "hint" if you are stuck and type "exit" if you want to quit')
-print ('Type "inv" to see what you are carrying')
+print ('Useful Commands:')
+print ('Type "hint" if you are stuck')
+print ('"exit" if you want to quit')
+print ('"inv" to see what you are carrying')
+print ('"load game" to load a saved game')
+print ('"save game" to save your game')
 print ('----------------------------------------------------------------')
 print ()
 print ('Your plane crashed in a dense jungle, you are thrown from your plane in the crash...')
@@ -15,6 +19,8 @@ print ('Press Enter...')
 input()
 from os import system
 system('cls')
+from lib.FileFunctions import FileHelper
+file_helper = FileHelper()
 
 def print_dead():
 	print("								")
@@ -28,7 +34,7 @@ def print_dead():
 	print("		|           |			")
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^^	")
 
-GLOBAL_COMMANDS = ['take batteries out', 'take batteries out of torch', 'take batteries out of radio', 'take out batteries', 'put batteries in torch', 'put batteries in radio', 'put batteries into torch', 'put batteries into radio']
+GLOBAL_COMMANDS = ['load game', 'save game', 'take batteries out', 'take batteries out of torch', 'take batteries out of radio', 'take out batteries', 'put batteries in torch', 'put batteries in radio', 'put batteries into torch', 'put batteries into radio']
 
 def apply_global_action(command, scene):
 	if command == 'take batteries out' or command == 'take out batteries' or command == 'take batteries out of torch' or command == 'take batteries out of radio':
@@ -65,14 +71,18 @@ def apply_global_action(command, scene):
 				print ("The radio already has batteries!")
 		else:
 			print ("You dont have any batteries!")
+	elif command == 'save game':
+		file_helper.save_game(scene)
+	elif command == 'load game':
+		file_helper.load_game()
 	else:
 		print ("Be more specific")
 
 ### Testing ###
 # state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'game_status' : {'torch_has_batteries' : True}, 'items' :
 # 	{'radio' : True, 'parachute' : True, 'torch' : True, 'batteries' : True, 'gun' : True, 'bullets' : True}}
-# from scenes.Maze import StartMaze
-# scene = StartMaze(state)
+# from scenes.Stage1Scenes import Cabin
+# scene = Cabin(state)
 ###############
 
 state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'items' : {}, 'game_status' : {}}
