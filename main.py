@@ -74,7 +74,7 @@ def apply_global_action(command, scene):
 	elif command == 'save game':
 		file_helper.save_game(scene)
 	elif command == 'load game':
-		file_helper.load_game()
+		scene = file_helper.load_game()
 	else:
 		print ("Be more specific")
 
@@ -103,7 +103,10 @@ while not(scene.dead or scene.success or command == 'exit'):
 		scene.same_scene = True
 	elif scene.contains_key(command, GLOBAL_COMMANDS):
 		apply_global_action(command, scene)
-		scene.same_scene = True
+		if command == 'load game':
+			scene.same_scene = False
+		else:
+			scene.same_scene = True
 	else:
 		scene = scene.apply_action(command)
 if scene.dead:
