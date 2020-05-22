@@ -34,7 +34,7 @@ def print_dead():
 	print("		|           |			")
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^^	")
 
-GLOBAL_COMMANDS = ['load game', 'save game', 'take batteries out', 'take batteries out of torch', 'take batteries out of radio', 'take out batteries', 'put batteries in torch', 'put batteries in radio', 'put batteries into torch', 'put batteries into radio']
+GLOBAL_COMMANDS = ['delete game', 'load game', 'save game', 'take batteries out', 'take batteries out of torch', 'take batteries out of radio', 'take out batteries', 'put batteries in torch', 'put batteries in radio', 'put batteries into torch', 'put batteries into radio']
 
 def apply_global_action(command, scene):
 	if command == 'take batteries out' or command == 'take out batteries' or command == 'take batteries out of torch' or command == 'take batteries out of radio':
@@ -74,9 +74,12 @@ def apply_global_action(command, scene):
 	elif command == 'save game':
 		file_helper.save_game(scene)
 	elif command == 'load game':
-		scene = file_helper.load_game()
+		scene = file_helper.load_game(scene)
+	elif command == 'delete game':
+		file_helper.delete_game()
 	else:
 		print ("Be more specific")
+	return scene
 
 ### Testing ###
 # state = {'score' : 0, 'score_elements' : {}, 'life' : 10, 'game_status' : {'torch_has_batteries' : True}, 'items' :
@@ -102,11 +105,12 @@ while not(scene.dead or scene.success or command == 'exit'):
 		scene.print_inventory(scene.current_state['items'])
 		scene.same_scene = True
 	elif scene.contains_key(command, GLOBAL_COMMANDS):
-		apply_global_action(command, scene)
-		if command == 'load game':
-			scene.same_scene = False
-		else:
-			scene.same_scene = True
+		scene = apply_global_action(command, scene)
+		if scene:
+			if command == 'load game':
+				scene.same_scene = False
+			else:
+				scene.same_scene = True
 	else:
 		scene = scene.apply_action(command)
 if scene.dead:
