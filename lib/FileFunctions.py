@@ -92,7 +92,7 @@ class FileHelper():
             else:
                 return scene
         except Exception as err:
-            print ('Error trying to save your game, sorry! Error is: %s' % str(err))
+            print ('Error trying to load your game, sorry! Error is: %s' % str(err))
             print ('Did you enter a valid number?')
             return scene
 

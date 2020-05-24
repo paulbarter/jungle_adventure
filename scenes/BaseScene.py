@@ -36,7 +36,7 @@ class BaseScene():
 		if self.current_state['items'][item]:
 			self.current_state['items'][item] = False
 		else:
-			print ('You dont have that to drop. Check your inventory by typing "inv"')
+			print ('You dont have that to drop. Check your inventory by typing "status"')
 
 	def have(self, item):
 		return self.current_state['items'].get(item, False)
@@ -152,12 +152,13 @@ class InitialScene(BaseScene):
 				self.current_state['items']['radio'] = True
 			else:
 				print ('Your pocket has some fluff in it')
-		elif 'radio' in command:
+		elif scene.contains_key(command, ['use radio', 'activate radio', 'talk on radio', 'push button on radio']):
 			if self.current_state['items'].get('radio', False):
 				if scene.game_status('radio_has_batteries'):
-					print ('You radio your plane for help and your co-pilot finds you!')
+					print ('You radio your plane for help... you co-pilot is in the plane, he is injured seriously but is still alive!')
 					self.inc_score(5, 'copilot')
-					print ('You are inside your plane. Your co-pilot is injured and after saving you dies...')
+					print ('He bravely rescues you and takes you into the plan... but after saving you dies tragically...')
+					print ('You are inside your plane')
 					scene = Plane(self.current_state)
 				else:
 					print ("The radio doesnt work for some reason?")

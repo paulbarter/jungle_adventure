@@ -27,8 +27,18 @@ class Plane(BaseScene):
 		elif command == 'look plane':
 			print ('Standard passenger plane, with a standard huge hole through the engine. It will never fly again.')
 			print ('The only things left unbroken are the seat and the roof.')
+			if not scene.game_status('bury stan'):
+				print ('The co-pilot Stan is dead on the floor.')
 		elif command == 'look seat':
 			print ('Its a normal plane seat. Strange its not also broken')
+		elif scene.contains_key(command, ['look Stan', 'look co-pilot', 'look stan']):
+			print ('Stan lies heroically in a slump on the floor. You only hope that you can be as brave as him.')
+		elif scene.contains_key(command, ['search stan', 'search Stan', 'search co-pilot']):
+			print ('You would never violate the memory of your friend by searching him!')
+		elif scene.contains_key(command, ['bury Stan', 'bury stan', 'bury co-pilot']):
+			print ('A noble thing to do. You bury Stan in the jungle and return to your plane')
+			scene.inc_score(3, 'bury stan')
+			scene.set_game_status('bury stan', True)
 		elif command == 'look under seat':
 			self.clear()
 			if not self.current_state['items'].get('parachute', False):	
@@ -119,7 +129,10 @@ class Mountains(BaseScene):
 		elif command == 'look cave':
 			print ('The cave looks dangerous')
 		elif command == '1':
-			scene = Cave(self.current_state)
+			if scene.game_status('wolf_dead'):
+				print ('The entrance to the cave is blocked because of the rock fall. Anyways, you dont want to go back in there, it was nasty!')
+			else:
+				scene = Cave(self.current_state)
 		elif command == '2':
 			scene = LeavePlane(self.current_state)
 		elif command == 'hint':
@@ -178,7 +191,7 @@ class Cave(BaseScene):
 			else:
 				scene = Mountains(self.current_state)
 		elif self.contains_key(command, ['shoot', 'use gun', 'fire']) and self.have('gun') and not self.game_status('wolf_dead'):
-			if self.have('bullets'):
+			if scene.game_status('gun_loaded'):
 				print ('With a mighty bang you slay the wolf! The huge explosion causes a rockfall blocking the exit to the cave!')
 				if not self.game_status('torch_has_batteries'):
 					print ('Without any light it is hopeless, you search for what seems like days and eventually you ' \
@@ -186,13 +199,13 @@ class Cave(BaseScene):
 					self.dead = True
 				else:
 					self.current_state['game_status']['wolf_dead'] = True
-					self.drop('bullets')
 			else:
 				print ('Your gun has no bullets... darn!')
 		elif self.contains_key(command, ['use torch', 'turn on torch', 'switch on torch']):
 			if self.have('torch'):
 				if self.game_status('torch_has_batteries'):
 					if self.game_status('wolf_dead'):
+						scene.inc_score(2, 'used_torch')
 						print('You switch on the torch and notice what looks like a tunnel, you walk closer and stumble ' \
 							  'into what looks like a maze!!!')
 						scene = StartMaze(self.current_state)
@@ -272,50 +285,51 @@ class Goat(BaseScene):
 			print ("The goat is munching away")
 		else:
 			print('The goat looks at you in surprise. You can see a store cupboard behind the goat. But the goat looks like it wont budge.')
-			print("")
-			print("                                                .--____.				")
-			print("                     ,_____._,                ,~-__,__,;\				")
-			print("                   ,/ /  / /~,\              ~'-_ ,~_/__--\				")
-			print("                 ,~'\/__:_; / ~\,_          /-__ ~\/  \ ;/,\			")
-			print("                / \ ,/\_\_~\ /  /|,';;;;`,|\  /\/     \=/- |			")
-			print("               ~--,/_/__  \ ~\ |  `._____.'  |/\/     __---=--			")
-			print("              /==/./ \ /\  ;\~\_\          _/\/,,__--'._/-' `			")
-			print("             |==|/    \==\;  ;\|  , \ \ / /L /::/ \,~~ |==|-|			")
-			print("             |//\\,__/== |: ;  |L_\  \ V / /L::/-__/  /=/-,|			")
-			print("              \ / | | \ /: ;  ;\ |\\  \ / //|: |__\_/=/--/,,			")
-			print("               \______,/; ;   ;;\ @|\  | /|@|;: \__\__\_/  ``,,			")
-			print("                     ,;  ;   ;;;|\/' \ |/ '\/;;               '',=``,	")
-			print("                    ,;  ;   ;;;;\  {  \|' }/;:'                  ,;;;	")
-			print("                    ,;  ;  ;;;;;:| {   |  }|;'                    , ;;;		")
-			print("                   ,; ;' ::::::;/    ./ \  \                        :, --	")
-			print("                  ,;;;;`,'`'`';/   ./    \  \_                       :,	")
-			print("                  ,;;     '''|____/   \__/\___|                       :,	")
-			print("                  ,;;             \_.  / _/                            :,	")
-			print("                  ,;;                \/\/                               :,	")
-			print("                  ,;;                                                    :,	")
-			print("                  ,;;                                                    :,	")
-			print("                  ,;;,                         ,--------.,       :;      :,	")
-			print("                   `:';__--                   /       .   \,     :;      :,	")
-			print("        .___________--`                      |        \    \___  :;      :,	")
-			print("       /                                    |:        | ;  \  \ :;       :,	")
-			print("      |                                     ;;;      / ;    |   :;      :.	")
-			print("     |:                       /             ;;;     | ,;    |  :;    ,,:'	")
-			print("     ;;;     /--;:,:;,,:;;;,;/';,,,,,,,,,,';;:    /  ;      |,;:,,,;:'		")
-			print("     ;:;    |`'';;;';';;'';;;         |   ;;:     / :;      |;;;'  |		")
-			print("     ;;    /                          |  ;;:     / :;-_____/   |   |		")
-			print("     ;:   |                           / ;;:     / :;           |   \		")
-			print("     ;     |                         |:,;;     | :;            /    |		")
-			print("    ;      |                         /-;'   ':| ;:            |:,,;/		")
-			print("    |:  ,;/                         |  ;      |:;             /-__-\		")
-			print("     ;   |                          \  ::,,,:/:;             |      |		")
-			print("     /   |                           \/`\    |:;             \  /\  /		")
-			print("    /-____\                              |    \'              \/'`\/		")
-			print("   |      `)                            /-____-\							")
-			print("   | ^   /                             |        |							")
-			print("   |/`\/                               |        |							")
-			print("                                        \  /\  /							")
-			print("                                         \/'`\/								")
-			print()
+
+		print("")
+		print("                                                .--____.				")
+		print("                     ,_____._,                ,~-__,__,;\				")
+		print("                   ,/ /  / /~,\              ~'-_ ,~_/__--\				")
+		print("                 ,~'\/__:_; / ~\,_          /-__ ~\/  \ ;/,\			")
+		print("                / \ ,/\_\_~\ /  /|,';;;;`,|\  /\/     \=/- |			")
+		print("               ~--,/_/__  \ ~\ |  `._____.'  |/\/     __---=--			")
+		print("              /==/./ \ /\  ;\~\_\          _/\/,,__--'._/-' `			")
+		print("             |==|/    \==\;  ;\|  , \ \ / /L /::/ \,~~ |==|-|			")
+		print("             |//\\,__/== |: ;  |L_\  \ V / /L::/-__/  /=/-,|			")
+		print("              \ / | | \ /: ;  ;\ |\\  \ / //|: |__\_/=/--/,,			")
+		print("               \______,/; ;   ;;\ @|\  | /|@|;: \__\__\_/  ``,,			")
+		print("                     ,;  ;   ;;;|\/' \ |/ '\/;;               '',=``,	")
+		print("                    ,;  ;   ;;;;\  {  \|' }/;:'                  ,;;;	")
+		print("                    ,;  ;  ;;;;;:| {   |  }|;'                    , ;;;		")
+		print("                   ,; ;' ::::::;/    ./ \  \                        :, --	")
+		print("                  ,;;;;`,'`'`';/   ./    \  \_                       :,	")
+		print("                  ,;;     '''|____/   \__/\___|                       :,	")
+		print("                  ,;;             \_.  / _/                            :,	")
+		print("                  ,;;                \/\/                               :,	")
+		print("                  ,;;                                                    :,	")
+		print("                  ,;;                                                    :,	")
+		print("                  ,;;,                         ,--------.,       :;      :,	")
+		print("                   `:';__--                   /       .   \,     :;      :,	")
+		print("        .___________--`                      |        \    \___  :;      :,	")
+		print("       /                                    |:        | ;  \  \ :;       :,	")
+		print("      |                                     ;;;      / ;    |   :;      :.	")
+		print("     |:                       /             ;;;     | ,;    |  :;    ,,:'	")
+		print("     ;;;     /--;:,:;,,:;;;,;/';,,,,,,,,,,';;:    /  ;      |,;:,,,;:'		")
+		print("     ;:;    |`'';;;';';;'';;;         |   ;;:     / :;      |;;;'  |		")
+		print("     ;;    /                          |  ;;:     / :;-_____/   |   |		")
+		print("     ;:   |                           / ;;:     / :;           |   \		")
+		print("     ;     |                         |:,;;     | :;            /    |		")
+		print("    ;      |                         /-;'   ':| ;:            |:,,;/		")
+		print("    |:  ,;/                         |  ;      |:;             /-__-\		")
+		print("     ;   |                          \  ::,,,:/:;             |      |		")
+		print("     /   |                           \/`\    |:;             \  /\  /		")
+		print("    /-____\                              |    \'              \/'`\/		")
+		print("   |      `)                            /-____-\							")
+		print("   | ^   /                             |        |							")
+		print("   |/`\/                               |        |							")
+		print("                                        \  /\  /							")
+		print("                                         \/'`\/								")
+		print()
 
 	def apply_action(self, command):
 		scene = self
@@ -324,7 +338,7 @@ class Goat(BaseScene):
 			self.describe()
 		elif command == 'feed goat':
 			print ('What are you going to feed the goat with?')
-		elif self.contains_key(command, ['give flowers', 'offer flowers', 'feed goat with flowers']):
+		elif self.contains_key(command, ['give flowers', 'offer flowers', 'feed goat with flowers', 'feed goat flowers']):
 			if self.have('flowers'):
 				print('The goat takes the flowers greedily, allowing you to open the store cupboard. You find...')
 				print ('press enter...')
@@ -333,9 +347,10 @@ class Goat(BaseScene):
 				self.take('bullets')
 				self.take('torch')
 				self.inc_score(3, 'bullets')
+				self.drop('flowers')
 			else:
 				print ('You dont have any flowers')
-		elif self.contains_key(command, ['hit', 'kick', 'punch']):
+		elif self.contains_key(command, ['hit', 'kick', 'punch', 'stroke', 'ride', 'pet']):
 			print('The goat doesnt like that! He butts you a good shot. Ow!')
 			self.damage(4)
 		elif command == 'hint':
@@ -401,8 +416,6 @@ class Cabin(BaseScene):
 		scene.same_scene = True
 		if command == 'look': 
 			self.describe()
-			if self.have('flowers'):
-				print ('but the flowers are gone')
 		elif command == 'look cabin':
 			print ('The cabin looks as charming from the inside and it does from the outside.')
 			print ('Chair, table, cupboard and door leading off')
@@ -426,11 +439,12 @@ class Cabin(BaseScene):
 		elif self.contains_key(command, ['get flowers', 'take flowers']) and not self.have('flowers'):
 			print ('You take the flowers and notice a piece of paper in the empty vase')
 			print ('The paper says: "17462"')
-			self.inc_score(2, 'flowers')
-			self.current_state['items']['flowers'] = True
+			scene.inc_score(2, 'flowers')
+			scene.current_state['items']['flowers'] = True
+			scene.describe()
 		elif command == 'leave':
 			scene = Forest(self.current_state)
-		elif command == 'look cupboard':
+		elif scene.contains_key(command, ['look cupboard', 'open cupboard']):
 			if self.have('gun'):
 				print ('The cuboard is now empty')
 			else:
