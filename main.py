@@ -6,11 +6,14 @@ print ()
 print ('----------------------------------------------------------------')
 print ('**************** Welcome to Jungle adventure!!! ****************') 
 print ('Useful Commands:')
-print ('Type "hint" if you are stuck')
+print ()
+print ('"hint" if you are stuck')
 print ('"exit" if you want to quit')
-print ('"inv" to see what you are carrying')
+print ('"status" to see what you are carrying, your score and your life')
 print ('"load game" to load a saved game')
 print ('"save game" to save your game')
+print ('"delete game" to delete a saved game')
+print ('"help" for information about how to play this kind of game')
 print ('----------------------------------------------------------------')
 print ()
 print ('Your plane crashed in a dense jungle, you are thrown from your plane in the crash...')
@@ -34,7 +37,7 @@ def print_dead():
 	print("		|           |			")
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^^	")
 
-GLOBAL_COMMANDS = ['delete game', 'load game', 'save game', 'take batteries out', 'take batteries out of torch', 'take batteries out of radio', 'take out batteries', 'put batteries in torch', 'put batteries in radio', 'put batteries into torch', 'put batteries into radio']
+GLOBAL_COMMANDS = ['help', 'delete game', 'load game', 'save game', 'take batteries out', 'take batteries out of torch', 'take batteries out of radio', 'take out batteries', 'put batteries in torch', 'put batteries in radio', 'put batteries into torch', 'put batteries into radio']
 
 def apply_global_action(command, scene):
 	if command == 'take batteries out' or command == 'take out batteries' or command == 'take batteries out of torch' or command == 'take batteries out of radio':
@@ -77,6 +80,8 @@ def apply_global_action(command, scene):
 		scene = file_helper.load_game(scene)
 	elif command == 'delete game':
 		file_helper.delete_game()
+	elif command == 'help':
+		scene.print_help()
 	else:
 		print ("Be more specific")
 	return scene
@@ -100,9 +105,9 @@ while not(scene.dead or scene.success or command == 'exit'):
 	elif command.startswith('drop '):
 		string_tokens = command.split(' ')
 		scene.drop(string_tokens[1])
-	elif command == 'inv':
+	elif command == 'status':
 		scene.clear()
-		scene.print_inventory(scene.current_state['items'])
+		scene.print_status()
 		scene.same_scene = True
 	elif scene.contains_key(command, GLOBAL_COMMANDS):
 		scene = apply_global_action(command, scene)

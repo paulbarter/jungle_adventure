@@ -52,7 +52,20 @@ class BaseScene():
 			if element in command:
 				return True
 		return False
-		
+
+	def print_help(self):
+		print ('Welcome to Jungle Adventure! This is a text based quest game that reaches back into the distant past to a more inoccent time. ')
+		print ('Graphics smaphics... Anyway, you need to type commands to get your character out of deadly peril and back home. ')
+		print ('Type commands such as "look" and "look tree" to get hints about your surroundings and what objects in the scene you can interact with. ')
+		print ('Although at times there may be hidden things as well that are not pointed out to you. ')
+		print ('Type commands such as: "enter", "leave", "use chocolate flame thrower" or "jump" and generally be persistent but mostly have fun!')
+
+	def print_status(self):
+		print ('Life: %s' % self.current_state['life'])
+		print ('Score: %s' % self.current_state['score'])
+		print ()
+		self.print_inventory(self.current_state['items'])
+
 	def print_inventory(self, inventory):
 		print ("You are carrying the following:")
 		for key, item in inventory.items():
