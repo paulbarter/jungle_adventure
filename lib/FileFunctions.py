@@ -17,7 +17,7 @@ class FileHelper():
     def get_class_from_class_name(self, class_name):
         if class_name in ['InitialScene', 'BaseScene', 'InTree']:
             return self.get_class_from_full_path('scenes.BaseScene.' + class_name)
-        elif class_name in ['Thirty', 'TwentyNine', 'TwentyEightTreasure', 'TwentyEightTreasureGone', 'TwentySeven', 'TwentySix', 'TwentyFive', 'TwentyFour', 'TwentyThree', 'TwentyTwo', 'TwentyOne', 'Twenty',
+        elif class_name in ['Exit', 'LockedExit', 'Thirty', 'TwentyNine', 'TwentyEightTreasure', 'TwentyEightTreasureGone', 'TwentySeven', 'TwentySix', 'TwentyFive', 'TwentyFour', 'TwentyThree', 'TwentyTwo', 'TwentyOne', 'Twenty',
                             'Nineteen', 'Eighteen', 'Seventeen', 'Sixteen', 'Fifteen', 'Fourteen', 'Thirteen', 'Twelve', 'Eleven', 'Ten', 'Nine', 'Eight', 'Seven', 'Six'
                             , 'Five', 'Four', 'Three', 'Two', 'One', 'Exit', 'EnterMaze', 'StartMaze']:
             return self.get_class_from_full_path('scenes.Maze.' + class_name)
