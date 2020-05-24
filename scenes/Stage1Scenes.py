@@ -276,6 +276,9 @@ class Forest(BaseScene):
         elif command == '1':
             if self.have('map'):
                 print ('No need to go in there any more, you have what you need from the woodsman.')
+            elif self.game_status('giant_humour') >= 3:
+                from scenes.OgreInCabin import HappyOgre
+                scene = HappyOgre(self.current_state)
             elif self.game_status('wolf_dead'):
                 from scenes.OgreInCabin import Ogre
                 scene = Ogre(self.current_state)
@@ -288,7 +291,6 @@ class Forest(BaseScene):
         else:
             print ('You cant do that')
         return scene
-
 
 class Goat(BaseScene):
 
@@ -544,13 +546,12 @@ class Cliff(BaseScene):
             self.damage(4)
         elif self.contains_key(command, ['parachute']):
             if self.have('map'):
-                print (
-                    'You put on the parachute, wait for a gust of wind and take to the skies, like an..... <press enter>')
+                print ('With the map and compass you feel confident you will be able to find your way wherever you land. You put on the parachute, wait for a gust of wind and take to the skies, like an..... <press enter>')
                 input()
                 print (
                     'Like an EAGLE!!! You glide down the cliff and land with a bump safely on the ground. Well done!!! You have made it to level 2!')
                 print (
-                    'Now you will just have to wait until your pappy makes level 2... Until then, happy adventuring!')
+                    'Now you will just have to wait until Paul makes level 2... Until then, happy adventuring!')
                 self.inc_score(10, 'parachute')
             else:
                 print (
