@@ -39,14 +39,14 @@ class MazeScene(BaseScene):
     def _fight_in_maze(self, scene):
         import random
         random.seed()
-        # if random.randint(1, 100) > 90:
-        #     random.seed()
-        #     monster_type = random.randint(1,10)
-        #     if monster_type >= 7:
-        #         monster = Snake(2, 'Viper', 'fangs', 'strikes', 8, 5)
-        #     else:
-        #         monster = Bat(4, 'Giant Bat', 'fangs', 'swoops', 2, 4)
-        #     scene = self._do_the_fight(monster, scene)
+        if random.randint(1, 100) > 90:
+            random.seed()
+            monster_type = random.randint(1,10)
+            if monster_type >= 7:
+                monster = Snake(2, 'Viper', 'fangs', 'strikes', 8, 5)
+            else:
+                monster = Bat(4, 'Giant Bat', 'fangs', 'swoops', 2, 4)
+            scene = self._do_the_fight(monster, scene)
         return scene
 
     def apply_action(self, command):
