@@ -139,7 +139,7 @@ class HappyOgre(BaseScene):
             print ('(you have over the radio to the Woodsman...)')
             print ('Ah yes, very nice, a model T1000, excellent workmanship, quality craftmanship... max range of 1000m... very nice very nice...')
             if not self.game_status('radio_has_batteries'):
-                print ('But there are NO BATTERIES!!! What kind of a fool do you take me for! And with a thunderous punch, the woodsman punches you through the winodow and you die!')
+                print ('But there are NO BATTERIES!!! What kind of a fool do you take me for! And with a thunderous punch, the woodsman punches you through the window and you die!')
                 self.dead = True
             else:
                 print ('Lovely, lovely, I will trade! Thank you!')
@@ -149,6 +149,9 @@ class HappyOgre(BaseScene):
                 self.take('compass')
                 from scenes.Stage1Scenes import Forest
                 scene = Forest(self.current_state)
+        elif command == 'leave':
+            from scenes.Stage1Scenes import Forest
+            scene = Forest(scene.current_state)
         else:
-            print('Nah, not interested in that thank you')
+            print('Nah, not interested in that thank you (type "leave" to leave)')
         return scene

@@ -277,7 +277,6 @@ class Forest(BaseScene):
 			print ('You cant do that')
 		return scene
 
-
 class Goat(BaseScene):
 
 	def describe(self):
@@ -436,9 +435,10 @@ class Cabin(BaseScene):
 		elif command == 'open door':
 			print ('You walk through the door to the back garden where you are greeted by a goat.')
 			scene = Goat(self.current_state)
-		elif self.contains_key(command, ['get flowers', 'take flowers']) and not self.have('flowers'):
+		elif self.contains_key(command, ['get flowers', 'take flowers']) and not self.game_status('taken_flowers') and not self.have('flowers'):
 			print ('You take the flowers and notice a piece of paper in the empty vase')
 			print ('The paper says: "17462"')
+			scene.set_game_status('taken_flowers', True)
 			scene.inc_score(2, 'flowers')
 			scene.current_state['items']['flowers'] = True
 			scene.describe()
