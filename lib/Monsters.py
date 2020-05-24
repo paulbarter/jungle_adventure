@@ -80,6 +80,7 @@ class Monster():
 
 class Bat(Monster):
     def describe_monster(self):
+        print('A Giant Bat swoops in from no-where what will you fight it with?')
         print("  ._.                  _.____.	")
         print("     ) \.              /    .(	")
         print("     )  |            .'   .(	")
@@ -93,3 +94,48 @@ class Bat(Monster):
         print("         ;0..0;   \				")
         print("          'vv'_.:_.;     		")
         print("               m  M				")
+
+class Snake(Monster):
+    def describe_monster(self):
+        print('A snake strikes from the shadows! What will you fight it with?')
+        print("                         __				")
+        print("           ---_ ...... _/_ -			")
+        print("          /  .      ./ .'*\ \			")
+        print("          : '         /__-'   \.		")
+        print("         /                      )		")
+        print("       _/                  >   .'		")
+        print("     /   .   .       _.-' /  .'			")
+        print("     \           __/'     /.'/|			")
+        print("       \ '--  .-' /     //' |\|			")
+        print("        \|  \ | /     //_ _ |/|			")
+        print("         `.  \:     //|_ _ _|\|			")
+        print("         | \/.    //  | _ _ |/| 		")
+        print("          \_ | \/ /    \ _ _ \\\		")
+        print("              \__/      \ _ _ \|\		")
+
+class Minotaur(Monster):
+    def describe_monster(self):
+        print('A MINOTAUR storms into view!!! What will you fight it with?')
+        print("                   (    )			")
+        print("                  ((((()))			")
+        print("                  |o\ /o)|			")
+        print("                  ( (  _')			")
+        print("                   (._.  /\__		")
+        print("                  ,\___,/ '  ')		")
+        print("    '.,_,,       (  .- .   .    )	")
+        print("     \   \\     ( '        )(    )	")
+        print("      \   \\    \.  _.__ ____( .  |	")
+        print("       \  /\\   .(   .'  /\  '.  )	")
+        print("        \(  \\.-' ( /    \/    \)	")
+        print("         '  ()) _'.-|/\/\/\/\/\|		")
+        print("             '\\ .( |\/\/\/\/\/|		")
+        print("               '((  \    /\    /		")
+        print("               ((((  '.__\/__.')		")
+        print("                ((,) /   ((()   )	")
+        print("                 '..-,  (()('   /	")
+        print("                  _//.   ((() .'		")
+        print("          _____ //,/' ___ ((( ', ___ ")
+        print("                           ((  )		")
+        print("                            / /		")
+        print("                          _/,/'		")
+        print("                        /,/,'		")

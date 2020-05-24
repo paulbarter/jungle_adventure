@@ -4,41 +4,49 @@ try:
 except Exception as err:
     h = 3
 
-from lib.Monsters import Bat, Player, Attacking
+from lib.Monsters import Bat, Snake, Minotaur, Player, Attacking
 
 class MazeScene(BaseScene):
+
+    def _do_the_fight(self, monster, scene):
+        monster.describe_monster()
+        print('1: Fists')
+        print('2: Gun')
+        print('3: Torch')
+        if scene.have('knife'):
+            print('4: Knife')
+        weapon = input()
+        if weapon == '1':
+            player = Player(scene.current_state['life'], 2, 5, 'swing your fists', 'fists')
+        elif weapon == '2':
+            player = Player(scene.current_state['life'], 1, 1, 'shoot blindly into the dark', 'gun')
+        elif weapon == '3':
+            player = Player(scene.current_state['life'], 1, 1, 'swing your torch wildly', 'torch')
+        elif scene.have('knife') and weapon == '4':
+            player = Player(scene.current_state['life'], 4, 8, 'Stab', 'knife')
+        else:
+            print('That was not an option... fists it is...')
+            player = Player(scene.current_state['life'], 2, 5, 'swing your fists', 'fists')
+        maze_attack = Attacking(monster, player)
+        player_dead, monster_dead = maze_attack.fighting()
+        if player_dead:
+            scene.dead = True
+        if monster_dead:
+            print('You have slain the monster, well done! Lets hope thats the last of them...')
+        scene.current_state['life'] = player.life
+        return scene
 
     def _fight_in_maze(self, scene):
         import random
         random.seed()
-        if random.randint(1, 100) > 50:
-            bat = Bat(2, 'Giant Bat', 'fangs', 'swoops', 2, 4)
-            bat.describe_monster()
-            print('A Giant Bat swoops in from no-where what will you fight it with?')
-            print('1: Fists')
-            print('2: Gun')
-            print('3: Torch')
-            if scene.have('knife'):
-                print('4: Knife')
-            weapon = input()
-            if weapon == '1':
-                player = Player(scene.current_state['life'], 2, 5, 'swing your fists', 'fists')
-            elif weapon == '2':
-                player = Player(scene.current_state['life'], 1, 1, 'shoot blindly into the dark', 'gun')
-            elif weapon == '3':
-                player = Player(scene.current_state['life'], 1, 1, 'swing your torch wildly', 'torch')
-            elif scene.have('knife') and weapon == '4':
-                player = Player(scene.current_state['life'], 4, 8, 'Stab', 'knife')
+        if random.randint(1, 100) > 90:
+            random.seed()
+            monster_type = random.randint(1,100)
+            if monster_type < 8:
+                monster = Snake(2, 'Viper', 'fangs', 'strikes', 8, 5)
             else:
-                print('That was not an option... fists it is...')
-                player = Player(scene.current_state['life'], 2, 5, 'swing your fists', 'fists')
-            maze_attack = Attacking(bat, player)
-            player_dead, monster_dead = maze_attack.fighting()
-            if player_dead:
-                scene.dead = True
-            if monster_dead:
-                print('You have slain the monster, well done! Lets hope thats the last of them...')
-            scene.current_state['life'] = player.life
+                monster = Bat(4, 'Giant Bat', 'fangs', 'swoops', 2, 4)
+            scene = self._do_the_fight(monster, scene)
         return scene
 
     def apply_action(self, command):
@@ -424,12 +432,10 @@ class TwentyThree(FourWay):
         return scene
 
 class Eighteen(DeadEndTop):
+
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
-        scene = DeadEndTop.apply_action(self, command)
-        if scene.dead:
-            return scene
         if command == 'look':
             self.describe()
         elif command == 'd':
@@ -531,6 +537,12 @@ class LockedExit(Passage):
         return scene
 
 class Seventeen(TLeft):
+
+    def _fight_minotaur(self):
+        monster = Minotaur(100, 'Minotaur', 'Axe', 'swings', 15, 12)
+        scene = self._do_the_fight(monster, self)
+        return scene
+
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
@@ -540,7 +552,11 @@ class Seventeen(TLeft):
         if command == 'look':
             self.describe()
         elif command == 'u':
-            scene = Eighteen(self.current_state)
+            scene = self._fight_minotaur()
+            if scene.dead:
+                return scene
+            else:
+                scene = Eighteen(self.current_state)
         elif command == 'l':
             scene = TwentySix(self.current_state)
         elif command == 'd':
