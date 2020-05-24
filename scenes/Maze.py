@@ -4,6 +4,8 @@ try:
 except Exception as err:
     h = 3
 
+from lib.Monsters import Monster, Player, Attacking
+
 class FourWay(BaseScene):
     def describe(self):
         print ('You come to a 4 way junction (you are the "#")')
@@ -197,6 +199,24 @@ class DeadEndBottom(BaseScene):
         print ('You can: ')
         print ('"u" : go up')
 
+def FightInMaze(scene):
+    bat = Monster(2, 'Giant Bat', 'fangs', 2, 4)
+    print ('A Giant Bat swoops in from no-where what will you fight it with?')
+    print ('1: Fists')
+    print ('2: Gun')
+    print ('3: Torch')
+    if scene.have('knife'):
+        print ('4: Knife')
+    weapon = input()
+    if weapon == '1':
+        player = Player(scene.game_status['life'], 2, 5, 'swing your fists')
+    elif weapon == '2':
+        player = Player(scene.game_status['life'], 1, 1, 'shoot blindly into the dark')
+    elif weapon == '3':
+        player = Player(scene.game_status['life'], 1, 1, 'swing your torch wildly')
+    if scene.have('knife') and weapon == '4':
+        player = Player(scene.game_status['life'], 4, 8, 'Stab')
+
 class Thirty(DeadEndBottom):
     def apply_action(self, command):
         scene = self
@@ -231,36 +251,10 @@ class TwentyNine(RightBend):
             print ('You cant do that')
         return scene
 
-class TwentyEightTreasure(DeadEndLeftTreasure):
+class TwentyEightKnife(DeadEndLeftTreasure):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
-
-        if not self.game_status('have_treasure'):
-            print ('You notice something strange on the floor... you stoop to pick it up. It is a scrap of paper that looks like this:')
-            print ('$:5 @:S &:P (:E !:N ~:1 `:T #:0 $:M ^:D ):6')
-            print ('Under the paper you find a gold coin!')
-            self.take('gold coin')
-            self.inc_score(4, 'maze_treasure')
-            self.set_game_status('have_treasure', True)
-
-        if command == 'look':
-            self.describe()
-        elif command == 'r':
-            scene = TwentySeven(self.current_state)
-        elif self.contains_key(command, ['leave']):
-            print ('You cant leave, you are in a maze, you must keep going...')
-        elif command == 'hint':
-            print('Chin up, stay positive, you are sure the end is just around the corner.')
-        else:
-            print ('You cant do that')
-        return scene
-
-class TwentyEightTreasureGone(DeadEndLeft):
-    def apply_action(self, command):
-        scene = self
-        scene.same_scene = True
-
         if command == 'look':
             self.describe()
         elif command == 'r':
@@ -280,10 +274,26 @@ class TwentySeven(TUp):
         if command == 'look':
             self.describe()
         elif command == 'l':
-            if not self.game_status('have_treasure'):
-                scene = TwentyEightTreasure(self.current_state)
-            else:
-                scene = TwentyEightTreasureGone(self.current_state)
+            if not self.game_status('have_knife'):
+                print ('You notice something glinting on the floor... you stoop to pick it up. You find... (press enter)')
+                print ('A Knife!')
+                print ("                                                       ___			")
+                print ("                                                      |_  |										")
+                print ("                                                        | |										")
+                print ("__                      ____                            | |										")
+                print ("\ ````''''----....____.'\   ````''''--------------------| |--.               _____      .-.		")
+                print (" :.                      `-._                           | |   `''-----''''```     ``''|`: :|	")
+                print ("  '::.                       `'--.._____________________| |                           | : :|	")
+                print ("    '::..       ----....._______________________________| |                           | : :|	")
+                print ("      `'-::...__________________________________________| |   .-''-..-'`-..-'`-..-''-.  : :|	")
+                print ("           ```'''---------------------------------------| |--'                         `'-'		")
+                print ("                                                        | |										")
+                print ("                                                       _| |										")
+                print ("                                                      |___| 									")
+                scene.take('knife')
+                self.inc_score(2, 'have_knife')
+                self.set_game_status('have_knife', True)
+            scene = TwentyEightKnife(self.current_state)
         elif command == 'r':
             scene = TwentyFive(self.current_state)
         elif command == 'u':
@@ -435,6 +445,47 @@ class Exit(Passage):
             print ('You cant do that')
         return scene
 
+class LockedExit(Passage):
+    def apply_action(self, command):
+        scene = self
+        scene.same_scene = True
+        if command == 'look':
+            self.describe()
+        elif command == 'u':
+            self.clear()
+            print ('You come across a door - could this be the exit to the maze!!! You push and push but the door is locked!')
+            print ()
+            print("|      | `-.  | `.  -_-_ _-_  _-  _- -_ -  .'|   |.'|     |  _..")
+            print("`-.._  |    |`!  |`.  -_ -__ -_ _- _-_-  .'  |.;'   |   _.!-'|  ")
+            print("   | `-!._  |  `;!  ;. _______________ ,'| .-' |   _!.i'     |  ")
+            print("_  |     |`-!._ | `.| |_______________||.''|  _!.;'   |     _|..")
+            print("|``'..__ |    |`';.| i|_|MMMMMMMMMMM|_|'| _!-|   |   _|..-|'    ")
+            print("|      |``--..|_ | `;!| |MMoMMMMoMMM| |.'j   |_..!-'|     |     ")
+            print("|      |    |   |`-,!_|_|MMMMP'YMMMM|_||.!-;'  |    |     |     ")
+            print("|______|____!.,.!,.!,!| |MMMo * loMM| |,!,.!.,.!..__|_____|_____")
+            print("   |     |    |  |  | |_|MMMMb,dMMMM|_|| |   |   |    |      |  ")
+            print("   |     |    |..!-;'i| |MPYMoMMMMoM| | |`-..|   |    |      |  ")
+            print("   |    _!.-j'  | _!,'|_|M<>MMMMoMMM|_||!._|  `i-!.._ |      |  ")
+            print("  _!.-'|    | _.'|  !;| |MbdMMoMMMMM| |`.| `-._|    |``-.._  |  ")
+            print("i'     |  _.''|  !-| !|_|MMMoMMMMoMM|_|.|`-. | ``._ |     |``'..")
+            print("|      |.|    |.|  !| | |MoMMMMoMMMM| ||`. |`!   | `'.    |     ")
+            print("|  _.-'  |  .'  |.' |/|_|MMMMoMMMMoM|_|! |`!  `,.|    |-._|     ")
+            print("!''|     !.'|  .'| .'|[ ]MMMMMMMMMMM[ ] \|  `. | `._  |   `-._  ")
+            print("   |   .'   |.|  |/| /                 \|`.  |`!    |.|      |`-")
+            print("   |_.'|   .' | .' |/                   \  \ |  `.  | `._    |  ")
+            print("  .'   | .'   |/|  /                     \ |`!   |`.|    `.  |  ")
+            print(".'     !'|   .' | /                       \|  `  |  `.    |`.|  ")
+            print ()
+        elif scene.contains_key(command, ['go back', 'leave', 'turn around', 'walk back', 'retreat', 'd']):
+            scene = Thirteen(self.current_state)
+        elif self.contains_key(command, ['push', 'kick', 'shoot', 'stab', 'ram']):
+            print ('The door doesnt budge')
+        elif command == 'hint':
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
+        else:
+            print ('You cant do that')
+        return scene
+
 class Seventeen(TLeft):
     def apply_action(self, command):
         scene = self
@@ -524,7 +575,10 @@ class Thirteen(FourWay):
         elif command == 'd':
             scene = Fifteen(self.current_state)
         elif command == 'u':
-            scene = Exit(self.current_state)
+            if scene.game_status('pulled_maze_lever'):
+                scene = Exit(self.current_state)
+            else:
+                scene = LockedExit(self.current_state)
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':

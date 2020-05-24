@@ -1,4 +1,6 @@
 
+import random
+
 def print_plane():
 	print ()
 	print ("                                    ___			")
