@@ -4,9 +4,47 @@ try:
 except Exception as err:
     h = 3
 
-from lib.Monsters import Monster, Player, Attacking
+from lib.Monsters import Bat, Player, Attacking
 
-class FourWay(BaseScene):
+class MazeScene(BaseScene):
+
+    def _fight_in_maze(self, scene):
+        import random
+        random.seed()
+        if random.randint(1, 100) > 50:
+            bat = Bat(2, 'Giant Bat', 'fangs', 'swoops', 2, 4)
+            bat.describe_monster()
+            print('A Giant Bat swoops in from no-where what will you fight it with?')
+            print('1: Fists')
+            print('2: Gun')
+            print('3: Torch')
+            if scene.have('knife'):
+                print('4: Knife')
+            weapon = input()
+            if weapon == '1':
+                player = Player(scene.current_state['life'], 2, 5, 'swing your fists', 'fists')
+            elif weapon == '2':
+                player = Player(scene.current_state['life'], 1, 1, 'shoot blindly into the dark', 'gun')
+            elif weapon == '3':
+                player = Player(scene.current_state['life'], 1, 1, 'swing your torch wildly', 'torch')
+            elif scene.have('knife') and weapon == '4':
+                player = Player(scene.current_state['life'], 4, 8, 'Stab', 'knife')
+            else:
+                print('That was not an option... fists it is...')
+                player = Player(scene.current_state['life'], 2, 5, 'swing your fists', 'fists')
+            maze_attack = Attacking(bat, player)
+            player_dead, monster_dead = maze_attack.fighting()
+            if player_dead:
+                scene.dead = True
+            if monster_dead:
+                print('You have slain the monster, well done! Lets hope thats the last of them...')
+            scene.current_state['life'] = player.life
+        return scene
+
+    def apply_action(self, command):
+        return self._fight_in_maze(self)
+
+class FourWay(MazeScene):
     def describe(self):
         print ('You come to a 4 way junction (you are the "#")')
         print ("")
@@ -20,7 +58,7 @@ class FourWay(BaseScene):
         print ('"l" : go left')
         print ('"d" : go down')
 
-class TUp(BaseScene):
+class TUp(MazeScene):
     def describe(self):
         print ('You come to a T junction (you are the "#")')
         print ("")
@@ -33,7 +71,7 @@ class TUp(BaseScene):
         print ('"l" : go left')
         print ('"u" : go up')
 
-class TDown(BaseScene):
+class TDown(MazeScene):
     def describe(self):
         print ('You come to a T junction (you are the "#")')
         print ("")
@@ -46,7 +84,7 @@ class TDown(BaseScene):
         print ('"l" : go left')
         print ('"d" : go down')
 
-class TLeft(BaseScene):
+class TLeft(MazeScene):
     def describe(self):
         print ('You come to an exit on the left and it continues straight on (you are the "#")')
         print ("")
@@ -59,7 +97,7 @@ class TLeft(BaseScene):
         print ('"l" : go left')
         print ('"d" : go down')
 
-class TRight(BaseScene):
+class TRight(MazeScene):
     def describe(self):
         print ('You come to an exit on the right and it continues straight on (you are the "#")')
         print ("")
@@ -72,7 +110,7 @@ class TRight(BaseScene):
         print ('"r" : go right')
         print ('"d" : go down')
 
-class LeftBend(BaseScene):
+class LeftBend(MazeScene):
     def describe(self):
         print ('You come to an exit on the left (you are the "#")')
         print ("")
@@ -84,7 +122,7 @@ class LeftBend(BaseScene):
         print ('"l" : go left')
         print ('"d" : go down')
 
-class LeftBendBottom(BaseScene):
+class LeftBendBottom(MazeScene):
     def describe(self):
         print ('You come to an exit on the left (you are the "#")')
         print ("")
@@ -96,7 +134,7 @@ class LeftBendBottom(BaseScene):
         print ('"l" : go left')
         print ('"u" : go up')
 
-class RightBendBottom(BaseScene):
+class RightBendBottom(MazeScene):
     def describe(self):
         print ('You come to an exit on the right (you are the "#")')
         print ("")
@@ -108,7 +146,7 @@ class RightBendBottom(BaseScene):
         print ('"r" : go right')
         print ('"u" : go up')
 
-class RightBend(BaseScene):
+class RightBend(MazeScene):
     def describe(self):
         print ('You come to an exit on the right (you are the "#")')
         print ("")
@@ -120,7 +158,7 @@ class RightBend(BaseScene):
         print ('"r" : go right')
         print ('"d" : go down')
 
-class Passage(BaseScene):
+class Passage(MazeScene):
     def describe(self):
         print ('You continue in the passage (you are the "#")')
         print ("")
@@ -132,7 +170,7 @@ class Passage(BaseScene):
         print ('"u" : go up')
         print ('"d" : go down')
 
-class FlatPassage(BaseScene):
+class FlatPassage(MazeScene):
     def describe(self):
         print ('You continue in the passage (you are the "#")')
         print ("")
@@ -144,7 +182,7 @@ class FlatPassage(BaseScene):
         print ('"l" : go left')
         print ('"r" : go right')
 
-class DeadEndTop(BaseScene):
+class DeadEndTop(MazeScene):
     def describe(self):
         print ('You reach a dead end (you are the "#")')
         print ("")
@@ -155,7 +193,7 @@ class DeadEndTop(BaseScene):
         print ('You can: ')
         print ('"d" : go down')
 
-class DeadEndLeft(BaseScene):
+class DeadEndLeft(MazeScene):
     def describe(self):
         print ('You reach a dead end (you are the "#")')
         print ("")
@@ -166,7 +204,7 @@ class DeadEndLeft(BaseScene):
         print ('You can: ')
         print ('"r" : go right')
 
-class DeadEndLeftTreasure(BaseScene):
+class DeadEndLeftTreasure(MazeScene):
     def describe(self):
         print ('You reach a dead end (you are the "#")')
         print ("")
@@ -177,7 +215,7 @@ class DeadEndLeftTreasure(BaseScene):
         print ('You can: ')
         print ('"r" : go right')
 
-class DeadEndRight(BaseScene):
+class DeadEndRight(MazeScene):
     def describe(self):
         print ('You reach a dead end (you are the "#")')
         print ("")
@@ -188,7 +226,7 @@ class DeadEndRight(BaseScene):
         print ('You can: ')
         print ('"l" : go left')
 
-class DeadEndBottom(BaseScene):
+class DeadEndBottom(MazeScene):
     def describe(self):
         print ('You reach a dead end (you are the "#")')
         print ("")
@@ -199,28 +237,13 @@ class DeadEndBottom(BaseScene):
         print ('You can: ')
         print ('"u" : go up')
 
-def FightInMaze(scene):
-    bat = Monster(2, 'Giant Bat', 'fangs', 2, 4)
-    print ('A Giant Bat swoops in from no-where what will you fight it with?')
-    print ('1: Fists')
-    print ('2: Gun')
-    print ('3: Torch')
-    if scene.have('knife'):
-        print ('4: Knife')
-    weapon = input()
-    if weapon == '1':
-        player = Player(scene.game_status['life'], 2, 5, 'swing your fists')
-    elif weapon == '2':
-        player = Player(scene.game_status['life'], 1, 1, 'shoot blindly into the dark')
-    elif weapon == '3':
-        player = Player(scene.game_status['life'], 1, 1, 'swing your torch wildly')
-    if scene.have('knife') and weapon == '4':
-        player = Player(scene.game_status['life'], 4, 8, 'Stab')
-
 class Thirty(DeadEndBottom):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = DeadEndBottom.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'u':
@@ -237,6 +260,9 @@ class TwentyNine(RightBend):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = RightBend.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'r':
@@ -255,6 +281,9 @@ class TwentyEightKnife(DeadEndLeftTreasure):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = DeadEndLeftTreasure.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'r':
@@ -310,6 +339,9 @@ class TwentySix(RightBend):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = RightBend.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'r':
@@ -328,6 +360,9 @@ class TwentyFive(TUp):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = TUp.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'l':
@@ -348,6 +383,9 @@ class TwentyFour(DeadEndRight):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = DeadEndRight.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'l':
@@ -364,6 +402,9 @@ class TwentyThree(FourWay):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = FourWay.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'u':
@@ -386,6 +427,9 @@ class Eighteen(DeadEndTop):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = DeadEndTop.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'd':
@@ -490,6 +534,9 @@ class Seventeen(TLeft):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = TLeft.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'u':
@@ -510,6 +557,9 @@ class Sixteen(TRight):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = TRight.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'u':
@@ -530,6 +580,9 @@ class Fifteen(LeftBendBottom):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = LeftBendBottom.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'u':
@@ -548,6 +601,9 @@ class Fourteen(RightBend):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = RightBend.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'r':
@@ -566,6 +622,9 @@ class Thirteen(FourWay):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = FourWay.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'l':
@@ -591,6 +650,9 @@ class TwentyTwo(RightBendBottom):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = RightBendBottom.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'r':
@@ -609,6 +671,9 @@ class TwentyOne(FourWay):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = FourWay.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'd':
@@ -631,6 +696,9 @@ class Twelve(LeftBend):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = LeftBend.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'l':
@@ -649,6 +717,9 @@ class Eleven(TUp):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = TUp.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'r':
@@ -669,6 +740,9 @@ class Twenty(DeadEndRight):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = DeadEndRight.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'l':
@@ -685,6 +759,9 @@ class Ten(RightBend):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = RightBend.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'r':
@@ -703,6 +780,9 @@ class Nine(TUp):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = TUp.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'r':
@@ -723,6 +803,9 @@ class Eight(LeftBend):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = LeftBend.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'l':
@@ -741,6 +824,9 @@ class Seven(LeftBendBottom):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = LeftBendBottom.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'l':
@@ -759,6 +845,9 @@ class Six(LeftBend):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = LeftBend.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'l':
@@ -777,6 +866,9 @@ class Five(TRight):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = TRight.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'u':
@@ -797,6 +889,9 @@ class Nineteen(DeadEndTop):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = DeadEndTop.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'd':
@@ -813,6 +908,9 @@ class Four(RightBendBottom):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = RightBendBottom.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'r':
@@ -831,6 +929,9 @@ class Three(FourWay):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = FourWay.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'u':
@@ -853,6 +954,9 @@ class Two(Passage):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = Passage.apply_action(self, command)
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'u':
@@ -871,6 +975,11 @@ class One(LeftBendBottom):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
+        scene = LeftBendBottom.apply_action(self, command)
+        if scene.dead:
+            return scene
+        if scene.dead:
+            return scene
         if command == 'look':
             self.describe()
         elif command == 'l':
