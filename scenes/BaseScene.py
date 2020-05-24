@@ -32,9 +32,11 @@ class BaseScene():
 	def take(self, item):
 		self.current_state['items'][item] = True
 
-	def drop(self, item):
+	def drop(self, item, silent=False):
 		if self.current_state['items'][item]:
 			self.current_state['items'][item] = False
+			if not silent:
+				print ('You drop the %s: ' % item)
 		else:
 			print ('You dont have that to drop. Check your inventory by typing "status"')
 

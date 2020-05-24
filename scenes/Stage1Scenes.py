@@ -347,7 +347,7 @@ class Goat(BaseScene):
 				self.take('bullets')
 				self.take('torch')
 				self.inc_score(3, 'bullets')
-				self.drop('flowers')
+				self.drop('flowers', silent=True)
 			else:
 				print ('You dont have any flowers')
 		elif self.contains_key(command, ['hit', 'kick', 'punch', 'stroke', 'ride', 'pet']):

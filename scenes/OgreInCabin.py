@@ -30,27 +30,28 @@ class Ogre(BaseScene):
         print("        ooOO(_)    (_)OOoo 						")
         print()
         if self.have('gun'):
-            print("And YOU HAVE MY GUN!!! You thief... With a mighty swing of his Axe the \
-                   Ogre, I means woodsman chops your head off")
+            print("And YOU HAVE MY GUN!!! You thief... With a mighty swing of his Axe the Ogre, I means woodsman chops your head off")
             self.dead = True
         else:
             print ("What are you doing here?")
             print ("You say:")
             print ("-------------------------------------------")
             print ("1: None of your business")
-            print("2: Just out camping")
-            print("3: Come to bring you a basket of food grandma")
-            print("4: I heard the gun shot too and came to help")
+            print ("2: Just out camping")
+            print ("3: Come to bring you a basket of food grandma")
+            print ("4: I heard the gun shot too and came to help")
 
     def adjust_humour(self, amount):
-        humour = self.current_state['game_status'].get('giant_humour', False)
-        if humour or humour == 0:
-            humour = humour + amount
-        else:
-            humour = amount
+        humour = self.current_state['game_status'].get('giant_humour', 0)
+        humour = humour + amount
+        if humour < 0:
+            # dont decrease below 0
+            humour = 0
+        self.current_state['game_status']['giant_humour'] = humour
 
     def calc_humour(self):
-        if random.randint(1, 2) < 2:
+        random.seed()
+        if random.randint(1, 7) < 6:
             print ("BBBBBUUUUHAHAHAHAAHAHA that is hilarious! Go on tell me another!")
             self.adjust_humour(1)
         else:
@@ -64,7 +65,7 @@ class Ogre(BaseScene):
             self.adjust_humour(-1)
         print ("Tell the woodsman another joke? Type: 'Y' or 'N'?")
         ans = input()
-        if ans.upper == 'Y':
+        if ans.upper() == 'Y':
             self.tell_joke()
 
     def tell_joke(self):
@@ -79,23 +80,42 @@ class Ogre(BaseScene):
             print ("I don't know, tell me?")
             ans3 = input()
         self.calc_humour()
-        if self.current_state['game_status'].get('giant_humour', 0) == 3:
+        if self.current_state['game_status'].get('giant_humour', 0) >= 3:
             self.inc_score(5, 'jokes')
             return HappyOgre(self.current_state)
+        return self
+
+    def maybe_annoy_ogre(self):
+        random.seed()
+        rand_num = random.randint(1, 5)
+        if rand_num > 2:
+            print ('With a mighty swipe of his ham sized hand, the Woodsman slaps you across the face')
+            self.damage(1)
+
+    def hurl_insult(self):
+        random.seed()
+        rand_num = random.randint(1, 4)
+        if rand_num == 1:
+            print ('Why you lilly livered hot dang shooting smoking makerel!')
+        elif rand_num == 2:
+            print ('You rude little tike!')
+        elif rand_num == 3:
+            print ('I ought to smash you for that!')
+        elif rand_num == 4:
+            print('Where did you get your manners!!!')
+        self.maybe_annoy_ogre()
 
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
-        if command == 'look':
+        if self.contains_key(command, ['talk', 'look']):
             self.describe()
-        elif command == '1':
-            print ("Why you rude little tike!")
-
-        elif command == '2':
-            scene = self.tell_joke()
+        elif command == 'leave':
+            from scenes.Stage1Scenes import Forest
+            scene = Forest(scene.current_state)
+        elif self.contains_key(command, ['1', '2', '4']):
+            self.hurl_insult()
         elif command == '3':
-            scene = self.tell_joke()
-        elif command == '4':
             scene = self.tell_joke()
         elif command == 'hint':
             print('I would try to get on his good side')

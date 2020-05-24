@@ -64,7 +64,7 @@ def apply_global_action(command, scene):
 				print ("You put the batteries in the torch.")
 				scene.set_game_status('torch_has_batteries', True)
 				scene.inc_score(5, 'torch_batteries')
-				scene.drop('batteries')
+				scene.drop('batteries', silent=True)
 			else:
 				print ("The torch already has batteries!")
 		else:
@@ -75,7 +75,7 @@ def apply_global_action(command, scene):
 				print ("You put the batteries in the radio.")
 				scene.set_game_status('radio_has_batteries', True)
 				scene.inc_score(2, 'radio_batteries')
-				scene.drop('batteries')
+				scene.drop('batteries', silent=True)
 			else:
 				print ("The radio already has batteries!")
 		else:
@@ -87,7 +87,7 @@ def apply_global_action(command, scene):
 			else:
 				print ('You load the gun. Ahhhh, you feel 10 feet tall... However you wish you spent more time in the shooting range...')
 				scene.set_game_status('gun_loaded', True)
-				scene.drop('bullets')
+				scene.drop('bullets', silent=True)
 		else:
 			print ('You dont have that')
 	elif command == 'look radio':
