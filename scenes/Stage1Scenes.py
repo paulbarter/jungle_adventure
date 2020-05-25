@@ -363,6 +363,7 @@ class Goat(BaseScene):
                 self.take('bullets')
                 self.take('torch')
                 self.inc_score(3, 'bullets')
+                self.set_game_status('fed_goat', True)
                 self.drop('flowers', silent=True)
             else:
                 print ('You dont have any flowers')
@@ -383,7 +384,7 @@ class Cabin(BaseScene):
     def describe(self):
         print ('The cabin is empty')
         print ("")
-        if self.have('flowers'):
+        if self.game_status('fed_goat') or self.have('flowers'):
             print("")
             print("0================================================0	")
             print("|'.                    (|)                     .'|	")

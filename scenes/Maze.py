@@ -638,10 +638,17 @@ class Fourteen(RightBend):
         return scene
 
 class Thirteen(FourWay):
+
+    def _fight_snake(self):
+        monster = Snake(15, 'Giant Viper', 'Fangs', 'strikes', 8, 5)
+        scene = self._do_the_fight(monster, self)
+        return scene
+
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
         scene = FourWay.apply_action(self, command)
+        scene = self._fight_snake()
         if scene.dead:
             return scene
         if command == 'look':
