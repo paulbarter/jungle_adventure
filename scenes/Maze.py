@@ -18,6 +18,8 @@ class MazeScene(BaseScene):
         print('3: Torch')
         if scene.have('knife'):
             print('4: Knife')
+        if scene.have('shield'):
+            print('5: Shield')
         weapon = input()
         if weapon == '1':
             player = Player(scene.current_state['life'], 2, 5, 'swing your fists', 'fists')
@@ -215,7 +217,7 @@ class DeadEndBottomTreasure(MazeScene):
         print('  /--     ')
         print ()
         print ('You can: ')
-        print ('"d" : go down')
+        print ('"u" : go up')
 
 class DeadEndLeft(MazeScene):
     def describe(self):
@@ -714,10 +716,13 @@ class Thirteen(FourWay):
         scene = self
         scene.same_scene = True
         scene = FourWay.apply_action(self, command)
-        scene = self._fight_snake()
+        if not scene.game_status('giant viper dead'):
+            scene = self._fight_snake()
+            scene.set_game_status('giant viper dead', True)
         if scene.dead:
             return scene
         if command == 'look':
+            print ('The giant viper lies dead on the floor')
             self.describe()
         elif command == 'l':
             scene = Fourteen(self.current_state)
