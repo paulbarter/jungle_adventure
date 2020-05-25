@@ -7,7 +7,7 @@ except Exception as err:
 from lib.Monsters import Bat, Snake, Minotaur, Player, Attacking
 
 # Testing!!!
-easy_monsters = True
+easy_monsters = False
 
 class MazeScene(BaseScene):
 
