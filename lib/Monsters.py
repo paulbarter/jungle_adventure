@@ -31,13 +31,14 @@ class Player():
         return self.life > 0
 
 class Monster():
-    def __init__(self, life, name, attack, attack_adjective, power, accuracy):
+    def __init__(self, life, name, attack, attack_adjective, power, accuracy, player_has_shield=False):
         self.life = life
         self.name = name
         self.attack = attack
         self.power = power
         self.accuracy = accuracy
         self.attack_adjective = attack_adjective
+        self.player_has_shield = player_has_shield
 
     def describe_monster(self):
         return
@@ -53,6 +54,10 @@ class Monster():
         if attack_success:
             random.seed()
             damage = random.randint(1, self.power)
+            if self.player_has_shield:
+                damage -= 3
+                if damage < 0:
+                    damage = 0
             print ('The %s HITs you for %d damage!' % (self.name, damage))
         else:
             print ('The %s MISSES you!' % self.name)
@@ -80,7 +85,7 @@ class Monster():
 
 class Bat(Monster):
     def describe_monster(self):
-        print('A Giant Bat swoops in from no-where what will you fight it with?')
+        print('A %s swoops in from no-where what will you fight it with?' % self.name)
         print("  ._.                  _.____.	")
         print("     ) \.              /    .(	")
         print("     )  |            .'   .(	")
@@ -97,7 +102,7 @@ class Bat(Monster):
 
 class Snake(Monster):
     def describe_monster(self):
-        print('A snake strikes from the shadows! What will you fight it with?')
+        print('A %s strikes from the shadows! What will you fight it with?' % self.name)
         print("                         __				")
         print("           ---_ ...... _/_ -			")
         print("          /  .      ./ .'*\ \			")
@@ -115,7 +120,7 @@ class Snake(Monster):
 
 class Minotaur(Monster):
     def describe_monster(self):
-        print('A MINOTAUR storms into view!!! What will you fight it with?')
+        print('A %s storms into view!!! What will you fight it with?' % self.name)
         print("                   (    )			")
         print("                  ((((()))			")
         print("                  |o\ /o)|			")

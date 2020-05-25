@@ -6,6 +6,9 @@ except Exception as err:
 
 from lib.Monsters import Bat, Snake, Minotaur, Player, Attacking
 
+# Testing!!!
+easy_monsters = True
+
 class MazeScene(BaseScene):
 
     def _do_the_fight(self, monster, scene):
@@ -23,7 +26,9 @@ class MazeScene(BaseScene):
         elif weapon == '3':
             player = Player(scene.current_state['life'], 1, 1, 'swing your torch wildly', 'torch')
         elif scene.have('knife') and weapon == '4':
-            player = Player(scene.current_state['life'], 4, 8, 'Stab', 'knife')
+            player = Player(scene.current_state['life'], 4, 8, 'stab', 'knife')
+        elif scene.have('shield') and weapon == '5':
+            player = Player(scene.current_state['life'], 1, 10, 'slam', 'shield')
         else:
             print('That was not an option... fists it is...')
             player = Player(scene.current_state['life'], 2, 5, 'swing your fists', 'fists')
@@ -39,13 +44,13 @@ class MazeScene(BaseScene):
     def _fight_in_maze(self, scene):
         import random
         random.seed()
-        if random.randint(1, 100) > 90:
+        if random.randint(1, 100) > 90 and not easy_monsters:
             random.seed()
             monster_type = random.randint(1,10)
             if monster_type >= 7:
-                monster = Snake(2, 'Viper', 'fangs', 'strikes', 8, 5)
+                monster = Snake(2, 'Viper', 'fangs', 'strikes', 8, 5, player_has_shield=self.have('shield'))
             else:
-                monster = Bat(4, 'Giant Bat', 'fangs', 'swoops', 2, 4)
+                monster = Bat(4, 'Giant Bat', 'fangs', 'swoops', 2, 4, player_has_shield=self.have('shield'))
             scene = self._do_the_fight(monster, scene)
         return scene
 
@@ -201,23 +206,23 @@ class DeadEndTop(MazeScene):
         print ('You can: ')
         print ('"d" : go down')
 
+class DeadEndBottomTreasure(MazeScene):
+    def describe(self):
+        print ('You reach a dead end (you are the "#")')
+        print ("")
+        print(' | # |')
+        print(' |   | ')
+        print('  /--     ')
+        print ()
+        print ('You can: ')
+        print ('"d" : go down')
+
 class DeadEndLeft(MazeScene):
     def describe(self):
         print ('You reach a dead end (you are the "#")')
         print ("")
         print('  ____ ')
         print(' | # ')
-        print('  ---- ')
-        print ()
-        print ('You can: ')
-        print ('"r" : go right')
-
-class DeadEndLeftTreasure(MazeScene):
-    def describe(self):
-        print ('You reach a dead end (you are the "#")')
-        print ("")
-        print('  ____ ')
-        print(' |+# ')
         print('  ---- ')
         print ()
         print ('You can: ')
@@ -244,6 +249,67 @@ class DeadEndBottom(MazeScene):
         print ()
         print ('You can: ')
         print ('"u" : go up')
+
+class Treasure(DeadEndBottomTreasure):
+    def apply_action(self, command):
+        scene = self
+        scene.same_scene = True
+        scene = DeadEndBottomTreasure.apply_action(self, command)
+        if scene.dead:
+            return scene
+        if command == 'look':
+            self.describe()
+        elif command == 'look wall':
+            print ('You notice that there is a gap in part of the wall!')
+        elif self.contains_key(command, ['look gap', 'look hole', 'tap wall', 'punch wall', 'examine wall']):
+            if not self.game_status('treasure'):
+                print ('You look through the hole in the wall and find some treasure!!!')
+                self.take('treasure')
+                self.inc_score(5,'treasure')
+                self.set_game_status('treasure', True)
+                print('*******************************************************************************	')
+                print('          |                   |                  |                     |	')
+                print(' _________|________________.=""_;=.______________|_____________________|_______	')
+                print('|                   |  ,-"_,=""     `"=.|                  |	')
+                print('|___________________|__"=._o`"-._        `"=.______________|___________________	')
+                print('          |                `"=._o`"=._      _`"=._                     |	')
+                print(' _________|_____________________:=._o "=._."_.-="""=.__________________|_______	')
+                print('|                   |    __.--" , ; `"=._o." ,-"""-._ ".   |	')
+                print('|___________________|_._"  ,. .` ` `` ,  `"-._"-._   ". "__|___________________	')
+                print('          |           |o`"=._` , "` `; .". ,  "-._"-._; ;              |	')
+                print(' _________|___________| ;`-.o`"=._; ." ` "`."\` . "-._ /_______________|_______	')
+                print('|                   | |o;    `"-.o`"=._``  "` " ,__.--o;   |	')
+                print('|___________________|_| ;     (#) `-.o `"=.`_.--"_o.-; ;___|___________________	')
+                print('____/______/______/___|o;._    "      `".o|o_.--"    ;o;____/______/______/____	')
+                print('/______/______/______/_"=._o--._        ; | ;        ; ;/______/______/______/_	')
+                print('____/______/______/______/__"=._o--._   ;o|o;     _._;o;____/______/______/____	')
+                print('/______/______/______/______/____"=._o._; | ;_.--"o.--"_/______/______/______/_	')
+                print('____/______/______/______/______/_____"=.o|o_.--""___/______/______/______/____	')
+                print('/______/______/______/______/______/______/______/______/______/______/______/	')
+                print('*******************************************************************************	')
+            else:
+                print ('You peer through the hole and find... (press enter)')
+                input()
+                import random
+                random.seed()
+                random_thing = random.randint(1, 4)
+                if random_thing == 1:
+                    print ('A cockroach')
+                if random_thing == 2:
+                    print ('slime')
+                if random_thing == 3:
+                    print ('a dead rat')
+                else:
+                    print ('dust')
+        elif command == 'u':
+            scene = TwentyNine(self.current_state)
+        elif self.contains_key(command, ['leave']):
+            print ('You cant leave, you are in a maze, you must keep going...')
+        elif command == 'hint':
+            print('Chin up, stay positive, you are sure the end is just around the corner.')
+        else:
+            print ('You cant do that')
+        return scene
 
 class Thirty(DeadEndBottom):
     def apply_action(self, command):
@@ -276,7 +342,7 @@ class TwentyNine(RightBend):
         elif command == 'r':
             scene = TwentyOne(self.current_state)
         elif command == 'd':
-            scene = Thirty(self.current_state)
+            scene = Treasure(self.current_state)
         elif self.contains_key(command, ['leave']):
             print ('You cant leave, you are in a maze, you must keep going...')
         elif command == 'hint':
@@ -285,11 +351,11 @@ class TwentyNine(RightBend):
             print ('You cant do that')
         return scene
 
-class TwentyEightKnife(DeadEndLeftTreasure):
+class TwentyEightKnife(DeadEndLeft):
     def apply_action(self, command):
         scene = self
         scene.same_scene = True
-        scene = DeadEndLeftTreasure.apply_action(self, command)
+        scene = DeadEndLeft.apply_action(self, command)
         if scene.dead:
             return scene
         if command == 'look':
@@ -542,7 +608,7 @@ class LockedExit(Passage):
 class Seventeen(TLeft):
 
     def _fight_minotaur(self):
-        monster = Minotaur(100, 'Minotaur', 'Axe', 'swings', 15, 12)
+        monster = Minotaur(100, 'Minotaur', 'Axe', 'swings', 15, 12, player_has_shield=self.have('shield'))
         scene = self._do_the_fight(monster, self)
         return scene
 
@@ -640,7 +706,7 @@ class Fourteen(RightBend):
 class Thirteen(FourWay):
 
     def _fight_snake(self):
-        monster = Snake(15, 'Giant Viper', 'Fangs', 'strikes', 8, 5)
+        monster = Snake(15, 'Giant Viper', 'Fangs', 'strikes', 8, 5, player_has_shield=self.have('shield'))
         scene = self._do_the_fight(monster, self)
         return scene
 
@@ -1027,6 +1093,18 @@ class Three(FourWay):
         elif command == 'd':
             scene = Two(self.current_state)
         elif command == 'r':
+            if not self.game_status('has shield'):
+                print ('On the wall of the maze you see a shield!!! That will be very useful')
+                print("  |`-._/\_.-`|	")
+                print("  |    ||    |	")
+                print("  |___o()o___|	")
+                print("  |__((<>))__|	")
+                print("  \   o\/o   /	")
+                print("   \   ||   /	")
+                print("    \  ||  /	")
+                print("     '.||.'		")
+                self.take('shield')
+                self.set_game_status('has shield', True)
             scene = Seven(self.current_state)
         elif command == 'l':
             scene = Four(self.current_state)
